@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 
 sys.path.append("./src/")
 
-from utils import dump
+from utils import dump, config
 
 
 class Loader:
@@ -38,7 +38,7 @@ class Loader:
     def unzip_folder(self):
         if os.path.exists(self.image_path):
             with zipfile.ZipFile(self.image_path, "r") as zip_file:
-                zip_file.extractall(path="./data/processed/")
+                zip_file.extractall(path=config()["path"]["RAW_PATH"])
 
         else:
             raise FileNotFoundError(
@@ -72,7 +72,7 @@ class Loader:
             raise TypeError("X and y must be of type list".capitalize())
 
     def feature_extractor(self):
-        self.directory = os.path.join("./data/processed/", "dataset")
+        self.directory = os.path.join(config()["path"]["RAW_PATH"], "dataset")
         self.train_directory = os.path.join(self.directory, "train")
         self.valid_directory = os.path.join(self.directory, "test")
 
@@ -158,7 +158,8 @@ class Loader:
         ]:
             dump(
                 value=value,
-                filename=os.path.join("./data/processed/", filename) + ".pkl",
+                filename=os.path.join(config()["path"]["PROCESSED_PATH"], filename)
+                + ".pkl",
             )
 
         print("Dataloader is saved in the folder of {}".format("./data/processed/"))
