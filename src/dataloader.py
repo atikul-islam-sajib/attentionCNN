@@ -1,7 +1,9 @@
 import os
 import sys
+import cv2
 import zipfile
 import argparse
+from torchvision import transforms
 
 
 class Loader:
@@ -22,7 +24,46 @@ class Loader:
                 "Image path not found in the Loader class".capitalize()
             )
 
+    def transforms(self):
+        return transforms.Compose(
+            [
+                transforms.Resize((self.image_size, self.image_size)),
+                transforms.ToTensor(),
+                transforms.CenterCrop((self.image_size, self.image_size)),
+                transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+            ]
+        )
+
+    def feature_extractor(self):
+        self.directory = os.path.join("./data/processed/", "dataset")
+        self.train_directory = os.path.join(self.directory, "train")
+        self.valid_directory = os.path.join(self.directory, "test")
+
+        for directory in [self.train_directory, self.valid_directory]:
+            self.images = os.path.join(directory, "image")
+            self.masks = os.path.join(directory, "mask")
+
+            for image in os.listdir(self.images):
+                mask = os.path.join(self.masks, image)
+                image = os.path.join(self.images, image)
+
+                image_name = image.split("/")[-1]
+                mask_name = mask.split("/")[-1]
+
+                if image_name == mask_name:
+                    extracted_image = cv2.imread(image)
+                    extracted_mask = cv2.imread(mask)
+
+                    extracted_image = cv2.cvtColor(extracted_image, cv2.COLOR_BGR2RGB)
+                    extracted_mask = cv2.cvtColor(extracted_mask, cv2.COLOR_BGR2RGB)
+
+                else:
+                    print("Image and mask names do not match".capitalize())
+
+            break
+
 
 if __name__ == "__main__":
     loader = Loader(image_path="./data/raw/dataset.zip", image_size=128, batch_size=16)
-    loader.unzip_folder()
+    # loader.unzip_folder()
+    loader.feature_extractor()
