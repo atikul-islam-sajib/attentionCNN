@@ -6,15 +6,23 @@ import argparse
 from tqdm import tqdm
 from PIL import Image
 from torchvision import transforms
+from sklearn.model_selection import train_test_split
 
 
 class Loader:
-    def __init__(self, image_path=None, image_size: int = 128, batch_size: int = 16):
+    def __init__(
+        self,
+        image_path=None,
+        image_size: int = 128,
+        batch_size: int = 16,
+        split_size: float = 0.2,
+    ):
         super(Loader, self).__init__()
 
         self.image_path = image_path
         self.image_size = image_size
         self.batch_size = batch_size
+        self.split_size = split_size
 
         self.train_images = list()
         self.valid_images = list()
@@ -41,6 +49,18 @@ class Loader:
                 transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
             ]
         )
+
+    def split_dataset(self, X: list, y: list):
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=self.split_size, random_state=42
+        )
+
+        return {
+            "X_train": X_train,
+            "X_test": X_test,
+            "y_train": y_train,
+            "y_test": y_test,
+        }
 
     def feature_extractor(self):
         self.directory = os.path.join("./data/processed/", "dataset")
