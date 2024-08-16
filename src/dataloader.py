@@ -7,6 +7,7 @@ from tqdm import tqdm
 from PIL import Image
 from torchvision import transforms
 from sklearn.model_selection import train_test_split
+from torch.utils.data import DataLoader
 
 
 class Loader:
@@ -51,16 +52,20 @@ class Loader:
         )
 
     def split_dataset(self, X: list, y: list):
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=self.split_size, random_state=42
-        )
+        if isinstance(X, list) and isinstance(y, list):
+            X_train, X_test, y_train, y_test = train_test_split(
+                X, y, test_size=self.split_size, random_state=42
+            )
 
-        return {
-            "X_train": X_train,
-            "X_test": X_test,
-            "y_train": y_train,
-            "y_test": y_test,
-        }
+            return {
+                "X_train": X_train,
+                "X_test": X_test,
+                "y_train": y_train,
+                "y_test": y_test,
+            }
+
+        else:
+            raise TypeError("X and y must be of type list".capitalize())
 
     def feature_extractor(self):
         self.directory = os.path.join("./data/processed/", "dataset")
@@ -108,6 +113,46 @@ class Loader:
         assert len(self.valid_images) == len(
             self.valid_masks
         ), "Number of images and masks do not match".capitalize()
+
+        try:
+            dataset = self.split_dataset(X=self.train_images, y=self.train_masks)
+
+        except TypeError as e:
+            print("An error occurred while splitting the dataset: ", e)
+        except Exception as e:
+            print("An error occurred while splitting the dataset: ", e)
+
+        else:
+            return dataset, {
+                "valid_images": self.valid_images,
+                "valid_masks": self.valid_masks,
+            }
+
+    def create_dataloader(self):
+        train_dataset, valid_dataset = self.feature_extractor()
+
+        train_dataloader = DataLoader(
+            dataset=list(zip(train_dataset["X_train"], train_dataset["y_train"])),
+            batch_size=self.batch_size,
+            shuffle=True,
+        )
+        test_dataloader = DataLoader(
+            dataset=list(zip(valid_dataset["X_test"], valid_dataset["y_test"])),
+            batch_size=self.batch_size,
+            shuffle=False,
+        )
+        valid_datalader = DataLoader(
+            dataset=zip(valid_dataset["valid_images"], valid_dataset["valid_masks"]),
+            batch_size=self.batch_size,
+            shuffle=False,
+        )
+
+        for value, filename in [
+            ("train_dataloader", train_dataloader),
+            ("test_dataloader", test_dataloader),
+            ("valid_dataloader", valid_datalader),
+        ]:
+            pass
 
 
 if __name__ == "__main__":
