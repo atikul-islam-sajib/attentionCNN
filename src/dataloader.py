@@ -3,6 +3,8 @@ import sys
 import cv2
 import zipfile
 import argparse
+from tqdm import tqdm
+from PIL import Image
 from torchvision import transforms
 
 
@@ -13,6 +15,12 @@ class Loader:
         self.image_path = image_path
         self.image_size = image_size
         self.batch_size = batch_size
+
+        self.train_images = list()
+        self.valid_images = list()
+
+        self.train_masks = list()
+        self.valid_masks = list()
 
     def unzip_folder(self):
         if os.path.exists(self.image_path):
@@ -39,7 +47,7 @@ class Loader:
         self.train_directory = os.path.join(self.directory, "train")
         self.valid_directory = os.path.join(self.directory, "test")
 
-        for directory in [self.train_directory, self.valid_directory]:
+        for directory in tqdm([self.train_directory, self.valid_directory]):
             self.images = os.path.join(directory, "image")
             self.masks = os.path.join(directory, "mask")
 
@@ -57,10 +65,29 @@ class Loader:
                     extracted_image = cv2.cvtColor(extracted_image, cv2.COLOR_BGR2RGB)
                     extracted_mask = cv2.cvtColor(extracted_mask, cv2.COLOR_BGR2RGB)
 
+                    extracted_image = Image.fromarray(extracted_image)
+                    extracted_mask = Image.fromarray(extracted_mask)
+
+                    extracted_image = self.transforms()(extracted_image)
+                    extracted_mask = self.transforms()(extracted_mask)
+
+                    if directory.split("/")[-1] == "train":
+                        self.train_images.append(extracted_image)
+                        self.train_masks.append(extracted_mask)
+
+                    elif directory.split("/")[-1] == "test":
+                        self.valid_images.append(extracted_image)
+                        self.valid_masks.append(extracted_mask)
+
                 else:
                     print("Image and mask names do not match".capitalize())
 
-            break
+        assert len(self.train_images) == len(
+            self.train_masks
+        ), "Number of images and masks do not match".capitalize()
+        assert len(self.valid_images) == len(
+            self.valid_masks
+        ), "Number of images and masks do not match".capitalize()
 
 
 if __name__ == "__main__":
