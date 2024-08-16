@@ -9,6 +9,10 @@ from torchvision import transforms
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
 
+sys.path.append("./src/")
+
+from utils import dump
+
 
 class Loader:
     def __init__(
@@ -137,7 +141,7 @@ class Loader:
             shuffle=True,
         )
         test_dataloader = DataLoader(
-            dataset=list(zip(valid_dataset["X_test"], valid_dataset["y_test"])),
+            dataset=list(zip(train_dataset["X_test"], train_dataset["y_test"])),
             batch_size=self.batch_size,
             shuffle=False,
         )
@@ -147,15 +151,20 @@ class Loader:
             shuffle=False,
         )
 
-        for value, filename in [
+        for filename, value in [
             ("train_dataloader", train_dataloader),
             ("test_dataloader", test_dataloader),
             ("valid_dataloader", valid_datalader),
         ]:
-            pass
+            dump(
+                value=value,
+                filename=os.path.join("./data/processed/", filename) + ".pkl",
+            )
+
+        print("Dataloader is saved in the folder of {}".format("./data/processed/"))
 
 
 if __name__ == "__main__":
     loader = Loader(image_path="./data/raw/dataset.zip", image_size=128, batch_size=16)
     # loader.unzip_folder()
-    loader.feature_extractor()
+    loader.create_dataloader()
