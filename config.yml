@@ -8,3 +8,7 @@ dataloader:
   image_size: 128
   batch_size: 16
   split_size: 0.25
+
+attentionCNN:
+  image_size: 128
+  nheads: 8

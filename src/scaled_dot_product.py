@@ -6,6 +6,8 @@ import torch.nn as nn
 
 sys.path.append("./src/")
 
+from utils import config
+
 
 def scaled_dot_product_attention(
     query: torch.Tensor, key: torch.Tensor, value: torch.Tensor, channels: int
@@ -39,6 +41,15 @@ def scaled_dot_product_attention(
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Scaled dot product attention for Multihead attention layer".capitalize()
+    )
+    parser.add_argument(
+        "--channels",
+        type=int,
+        default=config()["dataloader"]["image_size"],
+        help="Number of channels in the input tensor".capitalize(),
+    )
     scaled = scaled_dot_product_attention(
         query=torch.randn(16, 8, 16, 128 * 128),
         key=torch.randn(16, 8, 16, 128 * 128),
