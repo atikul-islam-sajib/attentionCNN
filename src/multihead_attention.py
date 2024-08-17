@@ -3,6 +3,11 @@ import torch
 import argparse
 import torch.nn as nn
 
+sys.path.append("./src/")
+
+from utils import config
+from scaled_dot_product import scaled_dot_product_attention
+
 
 class MultiHeadAttentionLayer(nn.Module):
     def __init__(self, channels: int = 128, nheads: int = 8, bias: bool = True):
@@ -69,7 +74,25 @@ class MultiHeadAttentionLayer(nn.Module):
                 self.value.size(2) * self.value.size(3),
             )
 
-            return self.query
+            self.attention = scaled_dot_product_attention(
+                query=self.query, key=self.key, value=self.value, channels=self.channels
+            )
+
+            assert (
+                self.attention.size()
+                == self.query.size()
+                == self.key.size()
+                == self.value.size()
+            ), "Attention output must have the same size as QKV"
+
+            self.attention = self.attention.view(
+                self.attention.size(0),
+                self.attention.size(1) * self.attention.size(2),
+                self.attention.size(3) // self.channels,
+                self.attention.size(3) // self.channels,
+            )
+
+            return self.layers(self.attention)
 
 
 if __name__ == "__main__":
