@@ -1,7 +1,9 @@
+import os
 import sys
 import torch
 import argparse
 import torch.nn as nn
+from torchview import draw_graph
 
 sys.path.append("./src/")
 
@@ -117,6 +119,12 @@ if __name__ == "__main__":
         default=config()["attentionCNN"]["bias"],
         help="Whether to use bias in the multihead attention layer".capitalize(),
     )
+    parser.add_argument(
+        "--display",
+        type=bool,
+        default=False,
+        help="Whether to display the attention architecture".capitalize(),
+    )
 
     args = parser.parse_args()
 
@@ -135,3 +143,18 @@ if __name__ == "__main__":
         image_size,
         image_size,
     ), "Multihead attention layer output size is incorrect".capitalize()
+
+    if args.display:
+        draw_graph(
+            model=attention,
+            input_data=torch.randn(batch_size, args.channels, image_size, image_size),
+        ).visual_graph.render(
+            filename=os.path.join(config()["path"]["FILES_PATH"], "multihead"),
+            format="png",
+        )
+
+        print(
+            "Multihead attention architecture saved in the folder {}".format(
+                config()["path"]["FILES_PATH"]
+            ).capitalize()
+        )
