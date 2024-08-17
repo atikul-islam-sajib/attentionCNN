@@ -50,11 +50,27 @@ if __name__ == "__main__":
         default=config()["dataloader"]["image_size"],
         help="Number of channels in the input tensor".capitalize(),
     )
+
+    batch_size = config()["dataloader"]["batch_size"]
+    image_size = config()["dataloader"]["image_size"]
+    nheads = config()["attentionCNN"]["nheads"]
+
     scaled = scaled_dot_product_attention(
-        query=torch.randn(16, 8, 16, 128 * 128),
-        key=torch.randn(16, 8, 16, 128 * 128),
-        value=torch.randn(16, 8, 16, 128 * 128),
-        channels=128,
+        query=torch.randn(
+            batch_size, nheads, image_size // nheads, image_size * image_size
+        ),
+        key=torch.randn(
+            batch_size, nheads, image_size // nheads, image_size * image_size
+        ),
+        value=torch.randn(
+            batch_size, nheads, image_size // nheads, image_size * image_size
+        ),
+        channels=image_size,
     )
 
-    print(scaled.size())
+    assert scaled.size() == (
+        batch_size,
+        nheads,
+        image_size // nheads,
+        image_size * image_size,
+    ), "scaled dot product attention output size is incorrect".capitalize()
