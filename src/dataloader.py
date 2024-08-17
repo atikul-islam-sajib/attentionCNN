@@ -1,17 +1,23 @@
 import os
 import sys
 import cv2
+import math
 import zipfile
 import argparse
-from tqdm import tqdm
 from PIL import Image
+from tqdm import tqdm
+import matplotlib.pyplot as plt
 from torchvision import transforms
-from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
+from sklearn.model_selection import train_test_split
 
 sys.path.append("./src/")
 
-from utils import dump, config
+from utils import (
+    dump,
+    load,
+    config,
+)
 
 
 class Loader:
@@ -147,7 +153,7 @@ class Loader:
         )
         valid_datalader = DataLoader(
             dataset=zip(valid_dataset["valid_images"], valid_dataset["valid_masks"]),
-            batch_size=self.batch_size,
+            batch_size=self.batch_size * 4,
             shuffle=False,
         )
 
@@ -163,13 +169,94 @@ class Loader:
             )
 
         print("Dataloader is saved in the folder of {}".format("./data/processed/"))
-        
+
     @staticmethod
     def display_images():
-        dataset = pass
+        dataset = load(
+            os.path.join(config()["path"]["PROCESSED_PATH"], "train_dataloader.pkl")
+        )
+
+        images, maks = next(iter(dataset))
+
+        number_of_rows = int(math.sqrt(images.size(0)))
+        number_of_columns = int(images.size(0) // number_of_rows)
+
+        plt.figure(figsize=(10, 10))
+
+        plt.suptitle("Images and Masks".capitalize())
+
+        for index, image in enumerate(images):
+            image = image.squeeze().permute(1, 2, 0).detach().cpu().numpy()
+            mask = maks[index].squeeze().permute(1, 2, 0).detach().cpu().numpy()
+
+            image = (image - image.min()) / (image.max() - image.min())
+            mask = (mask - mask.min()) / (mask.max() - mask.min())
+
+            plt.subplot(2 * number_of_rows, 2 * number_of_columns, 2 * index + 1)
+            plt.imshow(image)
+            plt.title("Image")
+            plt.axis("off")
+
+            plt.subplot(2 * number_of_rows, 2 * number_of_columns, 2 * index + 2)
+            plt.imshow(mask)
+            plt.title("Mask")
+            plt.axis("off")
+
+        plt.tight_layout()
+        plt.savefig(os.path.join(config()["path"]["FILES_PATH"], "image.png"))
+        plt.show()
+
+        print(
+            "Images saved in the folder: {}".format(
+                config()["path"]["FILES_PATH"]
+            ).capitalize()
+        )
 
 
 if __name__ == "__main__":
-    loader = Loader(image_path="./data/raw/dataset.zip", image_size=128, batch_size=16)
-    # loader.unzip_folder()
-    loader.create_dataloader()
+    parser = argparse.ArgumentParser(
+        description="Dataloader for the attentionCNN".capitalize()
+    )
+    parser.add_argument(
+        "--image_path",
+        type=str,
+        default=config()["dataloader"]["image_path"],
+        help="Path to the image dataset".capitalize(),
+    )
+    parser.add_argument(
+        "--image_size",
+        type=int,
+        default=config()["dataloader"]["image_size"],
+        help="Size of the image".capitalize(),
+    )
+    parser.add_argument(
+        "--batch_size",
+        type=int,
+        default=config()["dataloader"]["batch_size"],
+        help="Batch size for the dataloader".capitalize(),
+    )
+    parser.add_argument(
+        "--split_size",
+        type=float,
+        default=config()["dataloader"]["split_size"],
+        help="Split size for the dataloader".capitalize(),
+    )
+
+    args = parser.parse_args()
+
+    if args.image_path:
+
+        loader = Loader(
+            image_path=args.image_path,
+            image_size=args.image_size,
+            batch_size=args.batch_size,
+            split_size=args.split_size,
+        )
+
+        # loader.unzip_folder()
+        # loader.create_dataloader()
+
+        loader.display_images()
+
+    else:
+        raise ValueError("Please provide the path to the image dataset".capitalize())
