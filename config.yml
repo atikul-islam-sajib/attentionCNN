@@ -12,3 +12,4 @@ dataloader:
 attentionCNN:
   image_size: 128
   nheads: 8
+  bias: True

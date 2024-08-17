@@ -96,6 +96,39 @@ class MultiHeadAttentionLayer(nn.Module):
 
 
 if __name__ == "__main__":
-    attention = MultiHeadAttentionLayer(channels=128, nheads=8, bias=True)
+    parser = argparse.ArgumentParser(
+        description="Multihead attention layer for attentionCNN".capitalize()
+    )
+    parser.add_argument(
+        "--channels",
+        type=int,
+        default=config()["attentionCNN"]["image_size"],
+        help="Number of channels in the input tensor".capitalize(),
+    )
+    parser.add_argument(
+        "--nheads",
+        type=int,
+        default=config()["attentionCNN"]["nheads"],
+        help="Number of heads in the multihead attention layer".capitalize(),
+    )
+    parser.add_argument(
+        "--bias",
+        type=bool,
+        default=config()["attentionCNN"]["bias"],
+        help="Whether to use bias in the multihead attention layer".capitalize(),
+    )
 
-    print(attention(torch.randn(16, 128, 128, 128)).size())
+    args = parser.parse_args()
+
+    batch_size = config()["dataloader"]["batch_size"]
+    image_size = config()["dataloader"]["image_size"]
+
+    attention = MultiHeadAttentionLayer(
+        channels=args.channels, nheads=args.nheads, bias=args.bias
+    )
+
+    print(
+        attention(
+            torch.randn(batch_size, args.channels, args.image_size, args.image_size)
+        ).size()
+    )
