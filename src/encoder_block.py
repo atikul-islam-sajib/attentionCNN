@@ -23,12 +23,15 @@ class EncoderBlock(nn.Module):
         self.layers = list()
 
         self.encoder_block = self.layers.append(
-            nn.Conv2d(
-                in_channels=self.in_channels,
-                out_channels=self.out_channels,
-                kernel_size=self.kernel_size,
-                stride=self.stride_size,
-                padding=self.padding_size,
+            nn.Sequential(
+                nn.Conv2d(
+                    in_channels=self.in_channels,
+                    out_channels=self.out_channels,
+                    kernel_size=self.kernel_size,
+                    stride=self.stride_size,
+                    padding=self.padding_size,
+                ),
+                nn.LeakyReLU(negative_slope=0.2, inplace=True),
             )
         )
 
