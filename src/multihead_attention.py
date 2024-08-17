@@ -127,8 +127,11 @@ if __name__ == "__main__":
         channels=args.channels, nheads=args.nheads, bias=args.bias
     )
 
-    print(
-        attention(
-            torch.randn(batch_size, args.channels, args.image_size, args.image_size)
-        ).size()
-    )
+    assert attention(
+        torch.randn(batch_size, args.channels, image_size, image_size)
+    ).size() == (
+        batch_size,
+        args.channels,
+        image_size,
+        image_size,
+    ), "Multihead attention layer output size is incorrect".capitalize()
