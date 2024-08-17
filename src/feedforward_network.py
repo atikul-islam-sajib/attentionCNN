@@ -5,6 +5,8 @@ import torch.nn as nn
 
 sys.path.append("./src/")
 
+from utils import config
+
 
 class FeedForwardNeuralNetwork(nn.Module):
     def __init__(
@@ -65,6 +67,22 @@ class FeedForwardNeuralNetwork(nn.Module):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="FeedForwardNeuralNetwork for the task of the attentionCNN".capitalize()
+    )
+
+    parser.add_argument(
+        "--channels",
+        type=int,
+        default=config()["attentionCNN"]["image_size"],
+        help="Number of channels in the input image".capitalize(),
+    )
+    parser.add_argument(
+        "--dropout",
+        type=float,
+        default=config()["attentionCNN"]["dropout"],
+        help="Dropout rate for the network".capitalize(),
+    )
     network = FeedForwardNeuralNetwork(channels=256, dropout=0.1)
 
     print(network(torch.randn(16, 256, 256, 256)).size())

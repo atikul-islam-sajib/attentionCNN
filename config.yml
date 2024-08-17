@@ -12,4 +12,6 @@ dataloader:
 attentionCNN:
   image_size: 128
   nheads: 8
+  dropout: 0.1
+  activation: "relu"
   bias: True
