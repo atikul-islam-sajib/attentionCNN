@@ -15,4 +15,35 @@ def scaled_dot_product_attention(
         and isinstance(key, torch.Tensor)
         and isinstance(value, torch.Tensor)
     ):
-        pass
+        result = torch.matmul(query, key.transpose(-1, -2)) / math.sqrt(channels)
+
+        assert result.size() == (
+            query.size(0),
+            query.size(1),
+            query.size(2),
+            query.size(2),
+        ), "result size is not correct".capitalize()
+
+        result = torch.softmax(result, dim=-1)
+
+        attention = torch.matmul(result, value)
+
+        assert attention.size() == (
+            query.size(0),
+            query.size(1),
+            query.size(2),
+            value.size(3),
+        ), "attention size is not correct".capitalize()
+
+        return attention
+
+
+if __name__ == "__main__":
+    scaled = scaled_dot_product_attention(
+        query=torch.randn(16, 8, 16, 128 * 128),
+        key=torch.randn(16, 8, 16, 128 * 128),
+        value=torch.randn(16, 8, 16, 128 * 128),
+        channels=128,
+    )
+
+    print(scaled.size())
