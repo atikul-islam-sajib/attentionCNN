@@ -83,6 +83,30 @@ if __name__ == "__main__":
         default=config()["attentionCNN"]["dropout"],
         help="Dropout rate for the network".capitalize(),
     )
-    network = FeedForwardNeuralNetwork(channels=256, dropout=0.1)
+    parser.add_argument(
+        "--activation",
+        type=str,
+        default=config()["attentionCNN"]["activation"],
+        help="Activation function for the network".capitalize(),
+    )
+    parser.add_argument(
+        "--bias",
+        type=bool,
+        default=config()["attentionCNN"]["bias"],
+        help="Whether to use bias in the network".capitalize(),
+    )
 
-    print(network(torch.randn(16, 256, 256, 256)).size())
+    args = parser.parse_args()
+
+    batch_size = config()["dataloader"]["batch_size"]
+
+    network = FeedForwardNeuralNetwork(channels=args.channels, dropout=args.dropout)
+
+    assert network(
+        torch.randn(batch_size, args.channels, args.channels, args.channels)
+    ).size() == (
+        batch_size,
+        args.channels // 4,
+        args.channels * 2,
+        args.channels * 2,
+    ), "Network output size is incorrect".capitalize()
