@@ -28,3 +28,16 @@ class MultiHeadAttentionLayer(nn.Module):
             padding=self.padding,
             bias=self.bias,
         )
+
+        self.layers = nn.Conv2d(
+            in_channels=self.channels,
+            out_channels=self.channels,
+            kernel_size=self.kernel_size,
+            stride=self.stride,
+            padding=self.padding,
+            bias=self.bias,
+        )
+
+    def forward(self, x: torch.Tensor):
+        if isinstance(x, torch.Tensor):
+            pass
