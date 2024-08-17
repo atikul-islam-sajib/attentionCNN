@@ -13,11 +13,7 @@ from sklearn.model_selection import train_test_split
 
 sys.path.append("./src/")
 
-from utils import (
-    dump,
-    load,
-    config,
-)
+from utils import dump, load, config
 
 
 class Loader:
