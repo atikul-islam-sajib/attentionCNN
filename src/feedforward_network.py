@@ -49,8 +49,9 @@ class FeedForwardNeuralNetwork(nn.Module):
             if index == 0:
                 self.layers.append(nn.PixelShuffle(upscale_factor=self.upscale_factor))
                 self.layers.append(self.activation)
+                self.layers.append(nn.Dropout2d(p=self.dropout, inplace=True))
 
-            self.channels = self.channels // 4
+            self.channels = self.channels // self.upscale_factor**2
             self.out_channels = channels
 
         self.model = nn.Sequential(*self.layers)
@@ -58,6 +59,9 @@ class FeedForwardNeuralNetwork(nn.Module):
     def forward(self, x: torch.Tensor):
         if isinstance(x, torch.Tensor):
             return self.model(x)
+
+        else:
+            raise ValueError("Input must be a torch.Tensor".capitalize())
 
 
 if __name__ == "__main__":
