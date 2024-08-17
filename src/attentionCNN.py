@@ -1,0 +1,91 @@
+import sys
+import torch
+import argparse
+from tqdm import tqdm
+import torch.nn as nn
+
+sys.path.append("./src/")
+
+from attentionCNNBlock import attentionCNNBlock
+
+
+class attentionCNN(nn.Module):
+    def __init__(
+        self,
+        image_channels: int = 3,
+        image_size: int = 128,
+        nheads: int = 8,
+        dropout: float = 0.1,
+        num_layers: int = 8,
+        activation: str = "relu",
+        bias: bool = True,
+    ):
+        super(attentionCNN, self).__init__()
+
+        self.image_channels = image_channels
+        self.image_size = image_size
+        self.nheads = nheads
+        self.dropout = dropout
+        self.num_layers = num_layers
+        self.activation = activation
+        self.bias = bias
+
+        self.kernel_size = 3
+        self.stride_size = 1
+        self.padding_size = 1
+
+        self.input_block = nn.Conv2d(
+            in_channels=self.image_channels,
+            out_channels=self.image_size,
+            kernel_size=self.kernel_size,
+            stride=self.stride_size,
+            padding=self.padding_size,
+            bias=self.bias,
+        )
+
+        self.attention_cnn_block = nn.Sequential(
+            *[
+                attentionCNNBlock(
+                    channels=self.image_size,
+                    nheads=self.nheads,
+                    dropout=self.dropout,
+                    activation=self.activation,
+                    bias=self.bias,
+                )
+                for _ in tqdm(range(self.num_layers))
+            ]
+        )
+
+        self.output_block = nn.Conv2d(
+            in_channels=self.image_size,
+            out_channels=self.image_channels,
+            kernel_size=self.kernel_size,
+            stride=self.stride_size,
+            padding=self.padding_size,
+            bias=self.bias,
+        )
+
+    def forward(self, x: torch.Tensor):
+        if isinstance(x, torch.Tensor):
+            x = self.input_block(x)
+            x = self.attention_cnn_block(x)
+            x = self.output_block(x)
+
+            return torch.tanh(input=x)
+
+        else:
+            raise ValueError("Input must be a torch.Tensor")
+
+
+if __name__ == "__main__":
+    attention_cnn = attentionCNN(
+        image_channels=3,
+        image_size=128,
+        nheads=8,
+        dropout=0.1,
+        num_layers=6,
+        activation="relu",
+        bias=True,
+    )
+
+    print(attention_cnn(torch.randn(16, 3, 128, 128)).size())

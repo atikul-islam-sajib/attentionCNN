@@ -24,11 +24,13 @@ class FeedForwardNeuralNetwork(nn.Module):
         self.dropout = dropout
         self.activation = activation
         self.bias = bias
+        
+        self.in_channels = self.channels
+        self.out_channels = 3 * self.channels
 
         self.kernel_size = 1
         self.stride = 1
         self.padding = 0
-        self.upscale_factor = 2
 
         if activation == "leaky_relu":
             self.activation == nn.LeakyReLU(inplace=True, negative_slope=0.2)
@@ -42,8 +44,8 @@ class FeedForwardNeuralNetwork(nn.Module):
         for index in range(2):
             self.layers.append(
                 nn.Conv2d(
-                    in_channels=self.channels,
-                    out_channels=self.channels,
+                    in_channels=self.in_channels,
+                    out_channels=self.out_channels,
                     kernel_size=self.kernel_size,
                     stride=self.stride,
                     padding=self.padding,
@@ -51,12 +53,13 @@ class FeedForwardNeuralNetwork(nn.Module):
                 )
             )
             if index == 0:
-                self.layers.append(nn.PixelShuffle(upscale_factor=self.upscale_factor))
                 self.layers.append(self.activation)
                 self.layers.append(nn.Dropout2d(p=self.dropout, inplace=True))
 
-            self.channels = self.channels // self.upscale_factor**2
+            self.in_channels = self.out_channels 
             self.out_channels = channels
+            
+        
 
         self.model = nn.Sequential(*self.layers)
 
@@ -115,9 +118,9 @@ if __name__ == "__main__":
         torch.randn(batch_size, args.channels, args.channels, args.channels)
     ).size() == (
         batch_size,
-        args.channels // 4,
-        args.channels * 2,
-        args.channels * 2,
+        args.channels,
+        args.channels,
+        args.channels,
     ), "Network output size is incorrect".capitalize()
 
     if args.display:
