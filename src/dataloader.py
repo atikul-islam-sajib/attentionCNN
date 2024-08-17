@@ -163,6 +163,10 @@ class Loader:
             )
 
         print("Dataloader is saved in the folder of {}".format("./data/processed/"))
+        
+    @staticmethod
+    def display_images():
+        dataset = pass
 
 
 if __name__ == "__main__":
