@@ -1,7 +1,9 @@
+import os
 import sys
 import torch
 import argparse
 import torch.nn as nn
+from torchview import draw_graph
 
 sys.path.append("./src/")
 
@@ -96,6 +98,13 @@ if __name__ == "__main__":
         help="Whether to use bias in the network".capitalize(),
     )
 
+    parser.add_argument(
+        "--display",
+        type=bool,
+        default=False,
+        help="Whether to display the network".capitalize(),
+    )
+
     args = parser.parse_args()
 
     batch_size = config()["dataloader"]["batch_size"]
@@ -110,3 +119,20 @@ if __name__ == "__main__":
         args.channels * 2,
         args.channels * 2,
     ), "Network output size is incorrect".capitalize()
+
+    if args.display:
+        draw_graph(
+            model=network,
+            input_data=torch.randn(
+                batch_size, args.channels, args.channels, args.channels
+            ),
+        ).visual_graph.render(
+            filename=os.path.join(config()["path"]["FILES_PATH"], "feedforward"),
+            format="png",
+        )
+
+        print(
+            "Feed Forward architecture saved in the folder {}".format(
+                config()["path"]["FILES_PATH"]
+            ).capitalize()
+        )
