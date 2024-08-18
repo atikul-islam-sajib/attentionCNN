@@ -18,11 +18,11 @@ class DiceLoss(nn.Module):
             pred = pred.contiguous().view(-1)
             target = target.contiguous().view(-1)
 
-            dice_coef = (2 * (pred * target).sum()) / (
+            dice_coefficient = (2 * (pred * target).sum()) / (
                 pred.sum() + target.sum() + self.smooth
             )
 
-            return 1 - dice_coef
+            return 1 - dice_coefficient
 
         else:
             raise TypeError("pred and target must be torch.Tensor".capitalize())
