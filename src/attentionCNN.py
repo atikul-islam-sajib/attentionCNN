@@ -122,6 +122,15 @@ class attentionCNN(nn.Module):
 
         else:
             raise ValueError("Input must be a torch.Tensor")
+        
+    @staticmethod
+    def total_params(model = None):
+        if isinstance(model, attentionCNN):
+            return sum(params.numel() for params in model.parameters())
+        
+        else:
+            raise TypeError("Model should be attentionCNN".capitalize())
+        
 
 
 if __name__ == "__main__":
@@ -136,3 +145,5 @@ if __name__ == "__main__":
     )
 
     print(attention_cnn(torch.randn(1, 3, 256, 256)).size())
+    
+    print(attentionCNN.total_params(model=attention_cnn))
