@@ -1,6 +1,7 @@
 import sys
 import yaml
 import joblib
+import torch
 
 sys.path.append("./src/")
 
@@ -19,6 +20,15 @@ def load(filename=None):
 
     else:
         raise ValueError("Filename is required".capitalize())
+
+
+def device_init(device="cuda"):
+    if device == "cuda":
+        return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    elif device == "mps":
+        return torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+    else:
+        return torch.device("cpu")
 
 
 def config():
