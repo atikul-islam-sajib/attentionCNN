@@ -6,6 +6,7 @@ import torch.nn as nn
 
 sys.path.append("./src/")
 
+from utils import config
 from encoder_block import EncoderBlock
 from decoder_block import DecoderBlock
 from attentionCNNBlock import attentionCNNBlock
@@ -122,28 +123,78 @@ class attentionCNN(nn.Module):
 
         else:
             raise ValueError("Input must be a torch.Tensor")
-        
+
     @staticmethod
-    def total_params(model = None):
+    def total_params(model=None):
         if isinstance(model, attentionCNN):
             return sum(params.numel() for params in model.parameters())
-        
+
         else:
             raise TypeError("Model should be attentionCNN".capitalize())
-        
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="attentionCNN model".title())
+    parser.add_argument(
+        "--image_channels",
+        type=int,
+        default=config()["attentionCNN"]["image_channels"],
+        help="Number of channels in the input image".capitalize(),
+    )
+    parser.add_argument(
+        "--image_size",
+        type=int,
+        default=config()["attentionCNN"]["image_size"],
+        help="Size of the input image".capitalize(),
+    )
+    parser.add_argument(
+        "--nheads",
+        type=int,
+        default=config()["attentionCNN"]["nheads"],
+        help="Number of heads in the multihead attention".capitalize(),
+    )
+    parser.add_argument(
+        "--dropout",
+        type=float,
+        default=config()["attentionCNN"]["dropout"],
+        help="Dropout rate for the feedforward network".capitalize(),
+    )
+    parser.add_argument(
+        "--activation",
+        type=str,
+        default=config()["attentionCNN"]["activation"],
+        help="Activation function for the feedforward network".capitalize(),
+    )
+    parser.add_argument(
+        "--num_layers",
+        type=int,
+        default=config()["attentionCNN"]["num_layers"],
+        help="Number of layers in the CNN".capitalize(),
+    )
+    args = parser.parse_args()
+
+    batch_size = config()["dataloader"]["batch_size"]
+    image_size = config()["dataloader"]["image_size"]
+
     attention_cnn = attentionCNN(
-        image_channels=3,
-        image_size=256,
-        nheads=4,
-        dropout=0.1,
-        num_layers=1,
-        activation="relu",
+        image_channels=args.image_channels,
+        image_size=args.image_size,
+        nheads=args.nheads,
+        dropout=args.dropout,
+        num_layers=args.num_layers,
+        activation=args.activation,
         bias=True,
     )
 
-    print(attention_cnn(torch.randn(1, 3, 256, 256)).size())
-    
+    assert (
+        attention_cnn(
+            torch.randn(batch_size, args.image_channels, image_size, image_size)
+        ).size()
+    ) == (
+        batch_size,
+        args.image_channels,
+        image_size,
+        image_size,
+    ), "Output size of the attentionCNN is incorrect".capitalize()
+
     print(attentionCNN.total_params(model=attention_cnn))

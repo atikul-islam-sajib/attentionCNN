@@ -14,5 +14,6 @@ attentionCNN:
   image_size: 128
   nheads: 8
   dropout: 0.1
+  num_layers: 6
   activation: "relu"
   bias: True
