@@ -6,6 +6,8 @@ import torch.nn as nn
 
 sys.path.append("./src/")
 
+from encoder_block import EncoderBlock
+from decoder_block import DecoderBlock
 from attentionCNNBlock import attentionCNNBlock
 
 
@@ -42,6 +44,16 @@ class attentionCNN(nn.Module):
             padding=self.padding_size,
             bias=self.bias,
         )
+        
+        self.encoder1 = EncoderBlock(in_channels=self.image_size, out_channels=self.image_size*2, batch_norm=True)
+        self.encoder2 = EncoderBlock(in_channels=self.image_size*2, out_channels=self.image_size*4, batch_norm=True)
+        self.encoder3 = EncoderBlock(in_channels=self.image_size*4, out_channels=self.image_size*8, batch_norm=False)
+        
+        self.decoder1 = DecoderBlock(in_channels=self.image_size*8, out_channels=self.image_size*4, batchnorm=True)
+        self.decoder2 = DecoderBlock(in_channels=self.image_size*8, out_channels=self.image_size*2, batchnorm=True)
+        self.decoder3 = DecoderBlock(in_channels=self.image_size*4, out_channels=self.image_size, batchnorm=True)
+        
+         
 
         self.attention_cnn_block = nn.Sequential(
             *[
@@ -69,9 +81,22 @@ class attentionCNN(nn.Module):
         if isinstance(x, torch.Tensor):
             x = self.input_block(x)
             x = self.attention_cnn_block(x)
-            x = self.output_block(x)
+            
+            encoder1 = self.encoder1(x)
+            encoder2 = self.encoder2(encoder1)
+            encoder3 = self.encoder3(encoder2)
+            
+            decoder1 = self.decoder1(encoder3)
+            decoder1 = torch.cat((decoder1, encoder2), dim=1)
+            
+            decoder2 = self.decoder2(decoder1)
+            decoder2 = torch.cat((decoder2, encoder1), dim = 1)
+            
+            decoder3 = self.decoder3(decoder2)
+            
+            output = self.output_block(decoder3)
 
-            return torch.tanh(input=x)
+            return torch.tanh(input=output)
 
         else:
             raise ValueError("Input must be a torch.Tensor")
@@ -83,7 +108,7 @@ if __name__ == "__main__":
         image_size=128,
         nheads=8,
         dropout=0.1,
-        num_layers=6,
+        num_layers=1,
         activation="relu",
         bias=True,
     )
