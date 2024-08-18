@@ -25,6 +25,12 @@ class TverskyLoss(nn.Module):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Tversky Loss for the attentionCNN".title()
+    )
+
+    args = parser.parse_args()
+
     loss = TverskyLoss()
 
     predicted = torch.tensor([1.0, 0.0, 0.0, 0.0])
