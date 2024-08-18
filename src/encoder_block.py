@@ -5,6 +5,8 @@ import torch.nn as nn
 
 sys.path.append("./src/")
 
+from utils import config
+
 
 class EncoderBlock(nn.Module):
     def __init__(
@@ -49,8 +51,28 @@ class EncoderBlock(nn.Module):
 
 
 if __name__ == "__main__":
-    in_channels = 128
-    out_channels = 256
+    parser = argparse.ArgumentParser(
+        description="Encoder Block for attentionCNN".title()
+    )
+    parser.add_argument(
+        "--in_channels",
+        type=int,
+        default=128,
+        help="Number of input channels for the encoder block".capitalize(),
+    )
+    parser.add_argument(
+        "--out_channels",
+        type=int,
+        default=256,
+        help="Number of output channels for the encoder block".capitalize(),
+    )
+    args = parser.parse_args()
+
+    in_channels = args.in_channels
+    out_channels = args.out_channels
+
+    batch_size = config()["dataloader"]["batch_size"]
+    image_size = config()["attentionCNN"]["image_size"]
 
     layers = []
 
@@ -68,9 +90,11 @@ if __name__ == "__main__":
 
     model = nn.Sequential(*layers)
 
-    assert (model(torch.randn(16, 128, 128, 128))).size() == (
-        16,
-        in_channels,
-        128 // 8,
-        128 // 8,
-    )
+    assert (
+        model(torch.randn(batch_size, args.in_channels, image_size, image_size))
+    ).size() == (
+        batch_size,
+        args.in_channels * 8,
+        image_size // 8,
+        image_size // 8,
+    ), "Encoder block is not working correctly".capitalize()
