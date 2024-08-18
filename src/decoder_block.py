@@ -5,6 +5,8 @@ import torch.nn as nn
 
 sys.path.append("./src/")
 
+from utils import config
+
 
 class DecoderBlock(nn.Module):
     def __init__(
@@ -49,8 +51,28 @@ class DecoderBlock(nn.Module):
 
 
 if __name__ == "__main__":
-    in_channels = 1024
-    out_channels = 512
+    parser = argparse.ArgumentParser(
+        description="Decoder Block for attentionCNN".title()
+    )
+    parser.add_argument(
+        "--in_channels",
+        type=int,
+        default=1024,
+        help="Number of input channels for the decoder block".capitalize(),
+    )
+    parser.add_argument(
+        "--out_channels",
+        type=int,
+        default=512,
+        help="Number of output channels for the decoder block".capitalize(),
+    )
+    args = parser.parse_args()
+
+    in_channels = args.in_channels
+    out_channels = args.out_channels
+
+    batch_size = config()["dataloader"]["batch_size"]
+    image_size = config()["dataloader"]["image_size"] // 8
 
     layers = []
 
@@ -59,7 +81,14 @@ if __name__ == "__main__":
 
         in_channels = out_channels
         out_channels //= 2
-        
+
     model = nn.Sequential(*layers)
-    
-    assert model(torch.randn(16, 1024, 16, 16)).size() == (16, 1024//4, 16*4, 16*4)
+
+    assert model(
+        torch.randn(batch_size, args.in_channels, image_size, image_size)
+    ).size() == (
+        batch_size,
+        args.in_channels // 4,
+        image_size * 4,
+        image_size * 4,
+    ), "Decoder block output size is incorrect".capitalize()
