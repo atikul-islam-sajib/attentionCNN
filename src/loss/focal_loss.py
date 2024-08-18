@@ -27,7 +27,23 @@ class FocalLoss(nn.Module):
 
 
 if __name__ == "__main__":
-    loss = FocalLoss(alpha=0.25, gamma=2)
+    parser = argparse.ArgumentParser(description="Focal loss for attentionCNN".title())
+    parser.add_argument(
+        "--alpha",
+        type=float,
+        default=0.25,
+        help="Alpha parameter for focal loss".capitalize(),
+    )
+    parser.add_argument(
+        "--gamma",
+        type=int,
+        default=2,
+        help="Gamma parameter for focal loss".capitalize(),
+    )
+
+    args = parser.parse_args()
+
+    loss = FocalLoss(alpha=args.alpha, gamma=args.gamma)
 
     predicted = torch.tensor([0.0, 1.0, 0.0, 1.0])
     target = torch.tensor([0.0, 1.0, 0.0, 1.0])
