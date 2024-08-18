@@ -5,13 +5,13 @@ path:
 
 dataloader:
   image_path: "./data/raw/dataset.zip"
-  image_size: 256
+  image_size: 128
   batch_size: 16
   split_size: 0.25
 
 attentionCNN:
   image_channels: 3
-  image_size: 256
+  image_size: 128
   nheads: 8
   dropout: 0.1
   activation: "relu"
