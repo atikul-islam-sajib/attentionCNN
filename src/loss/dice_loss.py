@@ -25,7 +25,14 @@ class DiceLoss(nn.Module):
 
 
 if __name__ == "__main__":
-    loss = DiceLoss()
+    parser = argparse.ArgumentParser(description="DiceLoss for attentionCNN".title())
+    parser.add_argument(
+        "--smooth", type=float, default=1e-3, help="smooth parameter for DiceLoss"
+    )
+
+    args = parser.parse_args()
+
+    loss = DiceLoss(smooth=args.smooth)
 
     predicted = torch.tensor([1.0, 0.0, 0.0, 1.0, 1.0])
     target = torch.tensor([1.0, 0.0, 0.0, 1.0, 1.0])
