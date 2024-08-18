@@ -23,9 +23,16 @@ class BinaryCrossEntropyLoss(nn.Module):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="BCELoss for attentionCNN".title())
+    parser.add_argument(
+        "--reduction", type=str, default="mean", help="mean or sum or none".capitalize()
+    )
+
     loss = BinaryCrossEntropyLoss()
 
     predicted = torch.tensor([1.0, 0.0, 1.0, 0.0])
     target = torch.tensor([1.0, 0.0, 1.0, 0.0])
 
-    print(loss(predicted, target))
+    assert loss(predicted, target).size() == torch.Size(
+        []
+    ), "BCELoss is not working".capitalize()
