@@ -45,7 +45,38 @@ class ComboLoss(nn.Module):
 
 
 if __name__ == "__main__":
-    loss = ComboLoss(alpha=0.25, gamma=2, smooth=1e-4, reduction="mean")
+    parser = argparse.ArgumentParser(
+        description="Combo Loss for the attentionCNN".title()
+    )
+    parser.add_argument(
+        "--alpha",
+        type=float,
+        default=0.25,
+        help="Weight for the focal loss".capitalize(),
+    )
+    parser.add_argument(
+        "--gamma", type=float, default=2, help="Gamma for the focal loss".capitalize()
+    )
+    parser.add_argument(
+        "--smooth",
+        type=float,
+        default=1e-4,
+        help="Smooth for the dice loss".capitalize(),
+    )
+    parser.add_argument(
+        "--reduction",
+        type=str,
+        default="mean",
+        help="Reduction for the loss".capitalize(),
+    )
+    args = parser.parse_args()
+
+    loss = ComboLoss(
+        alpha=args.alpha,
+        gamma=args.gamma,
+        smooth=args.smooth,
+        reduction=args.reduction,
+    )
 
     predicted = torch.tensor([1, 0, 1, 0, 1, 0, 1, 0, 1, 0], dtype=torch.float)
     target = torch.tensor([1, 1, 1, 1, 1, 1, 1, 1, 1, 1], dtype=torch.float)
