@@ -93,7 +93,8 @@ class attentionCNN(nn.Module):
 
         self.output_block = nn.Conv2d(
             in_channels=self.image_size,
-            out_channels=self.image_channels,
+            out_channels=self.image_channels // self.image_channels,
+            # out_channels=self.image_channels,
             kernel_size=self.kernel_size,
             stride=self.stride_size,
             padding=self.padding_size,
@@ -102,6 +103,7 @@ class attentionCNN(nn.Module):
 
     def forward(self, x: torch.Tensor):
         if isinstance(x, torch.Tensor):
+            torch.autograd.set_detect_anomaly(True)
             x = self.input_block(x)
             x = self.attention_cnn_block(x)
 
@@ -119,7 +121,8 @@ class attentionCNN(nn.Module):
 
             output = self.output_block(decoder3)
 
-            return torch.tanh(input=output)
+            # return torch.sigmoid(input=output)
+            return torch.tanh(output)
 
         else:
             raise ValueError("Input must be a torch.Tensor")

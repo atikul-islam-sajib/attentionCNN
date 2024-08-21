@@ -20,7 +20,7 @@ class DiceLoss(nn.Module):
 
             dice_coefficient = (2 * (pred * target).sum()) / (
                 pred.sum() + target.sum() + self.smooth
-            )
+            ).mean()
 
             return 1 - dice_coefficient
 

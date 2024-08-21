@@ -12,6 +12,7 @@ from loss.jaccard_loss import IoULoss
 from loss.dice_loss import DiceLoss
 from loss.tversky_loss import TverskyLoss
 from loss.bce_loss import BinaryCrossEntropyLoss
+from loss.mse_loss import MeanSquaredLoss
 
 
 def load_dataloader():
@@ -19,16 +20,16 @@ def load_dataloader():
         train_dataloader = os.path.join(
             config()["path"]["PROCESSED_PATH"], "train_dataloader.pkl"
         )
-        valid_dataloader = os.path.join(
-            config()["path"]["PROCESSED_PATH"], "valid_dataloader.pkl"
-        )
+        # valid_dataloader = os.path.join(
+        #     config()["path"]["PROCESSED_PATH"], "valid_dataloader.pkl"
+        # )
         test_dataloader = os.path.join(
             config()["path"]["PROCESSED_PATH"], "test_dataloader.pkl"
         )
 
         return {
             "train_dataloader": load(filename=train_dataloader),
-            "valid_dataloader": load(filename=valid_dataloader),
+            # "valid_dataloader": load(filename=valid_dataloader),
             "test_dataloader": load(filename=test_dataloader),
         }
 
@@ -63,7 +64,9 @@ def helper(**kwargs):
         )
 
     if adam:
-        optimizer = optim.Adam(params=model.parameters(), lr=lr, betas=(beta1, beta2))
+        optimizer = optim.Adam(
+            params=model.parameters(), lr=lr, betas=(beta1, beta2), weight_decay=0.0001
+        )
     elif SGD:
         optimizer = optim.SGD(params=model.parameters(), lr=lr, momentum=momentum)
 
@@ -82,12 +85,14 @@ def helper(**kwargs):
         loss = IoULoss(smooth=smooth)
     elif loss == "tversky":
         loss = TverskyLoss()
+    elif loss == "mse":
+        loss = MeanSquaredLoss()
     else:
         loss = BinaryCrossEntropyLoss(reduction="mean")
 
     return {
         "train_dataloader": dataloader["train_dataloader"],
-        "valid_dataloader": dataloader["valid_dataloader"],
+        # "valid_dataloader": dataloader["valid_dataloader"],
         "test_dataloader": dataloader["test_dataloader"],
         "model": model,
         "optimizer": optimizer,

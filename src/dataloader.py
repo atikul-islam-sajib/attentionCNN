@@ -47,13 +47,23 @@ class Loader:
                 "Image path not found in the Loader class".capitalize()
             )
 
-    def transforms(self):
+    def image_transforms(self):
         return transforms.Compose(
             [
                 transforms.Resize((self.image_size, self.image_size)),
                 transforms.ToTensor(),
                 transforms.CenterCrop((self.image_size, self.image_size)),
                 transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+            ]
+        )
+
+    def mask_transforms(self):
+        return transforms.Compose(
+            [
+                transforms.Resize((self.image_size, self.image_size)),
+                transforms.ToTensor(),
+                transforms.CenterCrop((self.image_size, self.image_size)),
+                transforms.Normalize((0.5,), (0.5,)),
             ]
         )
 
@@ -76,9 +86,9 @@ class Loader:
     def feature_extractor(self):
         self.directory = os.path.join(config()["path"]["RAW_PATH"], "dataset")
         self.train_directory = os.path.join(self.directory, "train")
-        self.valid_directory = os.path.join(self.directory, "test")
+        # self.valid_directory = os.path.join(self.directory, "test")
 
-        for directory in tqdm([self.train_directory, self.valid_directory]):
+        for directory in tqdm([self.train_directory]):
             self.images = os.path.join(directory, "image")
             self.masks = os.path.join(directory, "mask")
 
@@ -94,13 +104,13 @@ class Loader:
                     extracted_mask = cv2.imread(mask)
 
                     extracted_image = cv2.cvtColor(extracted_image, cv2.COLOR_BGR2RGB)
-                    extracted_mask = cv2.cvtColor(extracted_mask, cv2.COLOR_BGR2RGB)
+                    extracted_mask = cv2.cvtColor(extracted_mask, cv2.COLOR_RGB2GRAY)
 
                     extracted_image = Image.fromarray(extracted_image)
                     extracted_mask = Image.fromarray(extracted_mask)
 
-                    extracted_image = self.transforms()(extracted_image)
-                    extracted_mask = self.transforms()(extracted_mask)
+                    extracted_image = self.image_transforms()(extracted_image)
+                    extracted_mask = self.mask_transforms()(extracted_mask)
 
                     if directory.split("/")[-1] == "train":
                         self.train_images.append(extracted_image)
@@ -133,6 +143,7 @@ class Loader:
                 "valid_images": self.valid_images,
                 "valid_masks": self.valid_masks,
             }
+            return dataset
 
     def create_dataloader(self):
         train_dataset, valid_dataset = self.feature_extractor()
@@ -183,7 +194,7 @@ class Loader:
 
         for index, image in enumerate(images):
             image = image.squeeze().permute(1, 2, 0).detach().cpu().numpy()
-            mask = maks[index].squeeze().permute(1, 2, 0).detach().cpu().numpy()
+            mask = maks[index].squeeze().detach().cpu().numpy()
 
             image = (image - image.min()) / (image.max() - image.min())
             mask = (mask - mask.min()) / (mask.max() - mask.min())
@@ -194,7 +205,7 @@ class Loader:
             plt.axis("off")
 
             plt.subplot(2 * number_of_rows, 2 * number_of_columns, 2 * index + 2)
-            plt.imshow(mask)
+            plt.imshow(mask, cmap="gray")
             plt.title("Mask")
             plt.axis("off")
 
@@ -250,7 +261,7 @@ if __name__ == "__main__":
         )
 
         # loader.unzip_folder()
-        # loader.create_dataloader()
+        loader.create_dataloader()
 
         loader.display_images()
 

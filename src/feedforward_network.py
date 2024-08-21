@@ -24,7 +24,7 @@ class FeedForwardNeuralNetwork(nn.Module):
         self.dropout = dropout
         self.activation = activation
         self.bias = bias
-        
+
         self.in_channels = self.channels
         self.out_channels = 3 * self.channels
 
@@ -33,11 +33,11 @@ class FeedForwardNeuralNetwork(nn.Module):
         self.padding = 0
 
         if activation == "leaky_relu":
-            self.activation == nn.LeakyReLU(inplace=True, negative_slope=0.2)
+            self.activation = nn.LeakyReLU(inplace=True, negative_slope=0.2)
         elif activation == "gelu":
             self.activation = nn.GELU()
         else:
-            self.activation = nn.ReLU(inplace=True)
+            self.activation = nn.ReLU()
 
         self.layers = []
 
@@ -54,12 +54,10 @@ class FeedForwardNeuralNetwork(nn.Module):
             )
             if index == 0:
                 self.layers.append(self.activation)
-                self.layers.append(nn.Dropout2d(p=self.dropout, inplace=True))
+                self.layers.append(nn.Dropout2d(p=self.dropout))
 
-            self.in_channels = self.out_channels 
+            self.in_channels = self.out_channels
             self.out_channels = channels
-            
-        
 
         self.model = nn.Sequential(*self.layers)
 

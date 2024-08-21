@@ -31,6 +31,17 @@ def device_init(device="cuda"):
         return torch.device("cpu")
 
 
+def weight_init(m):
+    classname = m.__class__.__name__
+
+    if classname.find("Conv") != -1:
+        torch.nn.init.kaiming_normal_(m.weight)
+
+    elif classname.find("BatchNorm") != -1:
+        torch.nn.init.normal_(m.weight, 1.0, 0.02)
+        torch.nn.init.constant_(m.bias, 0.0)
+
+
 def config():
     with open("./config.yml", "r") as file:
         return yaml.safe_load(file)

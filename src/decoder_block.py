@@ -33,7 +33,7 @@ class DecoderBlock(nn.Module):
                     stride=self.stride_size,
                     padding=self.padding_size,
                 ),
-                nn.ReLU(inplace=True),
+                nn.ReLU(),
             )
         )
 

@@ -12,7 +12,7 @@ class BinaryCrossEntropyLoss(nn.Module):
 
         self.reduction = reduction
 
-        self.loss = nn.BCELoss(reduction=self.reduction)
+        self.loss = nn.BCEWithLogitsLoss(reduction=self.reduction)
 
     def forward(self, pred: torch.Tensor, target: torch.Tensor):
         if isinstance(pred, torch.Tensor) and isinstance(target, torch.Tensor):

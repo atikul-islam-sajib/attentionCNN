@@ -2,12 +2,16 @@ path:
   RAW_PATH: "./data/raw/"
   PROCESSED_PATH: "./data/processed/"
   FILES_PATH: "./artifacts/files/"
+  TRAIN_IMAGES: "./artifacts/outputs/train_images/"
+  TRAIN_MODELS: "./artifacts/checkpoints/train_models/"
+  BEST_MODEL: "./artifacts/checkpoints/best_model/"
+  METRICS_PATH: "./artifacts/metrics/"
 
 dataloader:
   image_path: "./data/raw/dataset.zip"
   image_size: 128
-  batch_size: 16
-  split_size: 0.25
+  batch_size: 4
+  split_size: 0.15
 
 attentionCNN:
   image_channels: 3
@@ -17,3 +21,48 @@ attentionCNN:
   num_layers: 1
   activation: "relu"
   bias: True
+
+model:
+  epochs: 5
+  lr: 0.0001
+  beta1: 0.85
+  beta2: 0.999
+  momentum: 0.90
+  adam: True
+  SGD: False
+  loss: "mse"
+  smooth: 1e-4
+  alpha: 0.25
+  gamma: 2
+  step_size: 20
+  device: "mps"
+  lr_scheduler: False
+  weight_init: False
+  l1_regularization: False
+  l2_regularization: False
+  elasticnet_regularization: False
+  verbose: True
+
+
+
+
+#   path:
+#   RAW_PATH: "./data/raw/"
+#   PROCESSED_PATH: "./data/processed/"
+#   FILES_PATH: "./artifacts/files/"
+#   TRAIN_IMAGES: "./artifacts/outputs/train_images/"
+
+# dataloader:
+#   image_path: "./data/raw/dataset.zip"
+#   image_size: 128
+#   batch_size: 4
+#   split_size: 0.95
+
+# attentionCNN:
+#   image_channels: 3
+#   image_size: 128
+#   nheads: 8
+#   dropout: 0.1
+#   num_layers: 2
+#   activation: "relu"
+#   bias: False

@@ -40,6 +40,8 @@ class attentionCNNBlock(nn.Module):
             bias=self.bias,
         )
 
+        self.batch_norm = nn.BatchNorm2d(num_features=self.channels)
+
     def forward(self, x: torch.Tensor):
         if isinstance(x, torch.Tensor):
             residual = x
@@ -47,14 +49,14 @@ class attentionCNNBlock(nn.Module):
             x = self.multihead_attention(x=x)
             x = torch.dropout(input=x, p=self.dropout, train=self.training)
             x = torch.add(x, residual)
-            x = nn.BatchNorm2d(num_features=self.channels)(x)
+            x = self.batch_norm(x)
 
             residual = x
 
             x = self.feedforward_network(x=x)
             x = torch.dropout(input=x, p=self.dropout, train=self.training)
             x = torch.add(x, residual)
-            x = nn.BatchNorm2d(num_features=self.channels)(x)
+            x = self.batch_norm(x)
 
             return x
 
