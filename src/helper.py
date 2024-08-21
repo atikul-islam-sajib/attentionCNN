@@ -20,16 +20,16 @@ def load_dataloader():
         train_dataloader = os.path.join(
             config()["path"]["PROCESSED_PATH"], "train_dataloader.pkl"
         )
-        # valid_dataloader = os.path.join(
-        #     config()["path"]["PROCESSED_PATH"], "valid_dataloader.pkl"
-        # )
+        valid_dataloader = os.path.join(
+            config()["path"]["PROCESSED_PATH"], "valid_dataloader.pkl"
+        )
         test_dataloader = os.path.join(
             config()["path"]["PROCESSED_PATH"], "test_dataloader.pkl"
         )
 
         return {
             "train_dataloader": load(filename=train_dataloader),
-            # "valid_dataloader": load(filename=valid_dataloader),
+            "valid_dataloader": load(filename=valid_dataloader),
             "test_dataloader": load(filename=test_dataloader),
         }
 
@@ -92,7 +92,7 @@ def helper(**kwargs):
 
     return {
         "train_dataloader": dataloader["train_dataloader"],
-        # "valid_dataloader": dataloader["valid_dataloader"],
+        "valid_dataloader": dataloader["valid_dataloader"],
         "test_dataloader": dataloader["test_dataloader"],
         "model": model,
         "optimizer": optimizer,

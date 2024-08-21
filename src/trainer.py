@@ -80,7 +80,7 @@ class Trainer:
         )
 
         self.train_dataloader = self.init["train_dataloader"]
-        # self.valid_dataloader = self.init["valid_dataloader"]
+        self.valid_dataloader = self.init["valid_dataloader"]
         self.test_dataloader = self.init["test_dataloader"]
 
         self.model = self.init["model"]
@@ -94,11 +94,11 @@ class Trainer:
         ) == torch.utils.data.dataloader.DataLoader, (
             "train_dataloader is not a dataloader".capitalize()
         )
-        # assert (
-        #     self.init["valid_dataloader"].__class__
-        # ) == torch.utils.data.dataloader.DataLoader, (
-        #     "valid_dataloader is not a dataloader".capitalize()
-        # )
+        assert (
+            self.init["valid_dataloader"].__class__
+        ) == torch.utils.data.dataloader.DataLoader, (
+            "valid_dataloader is not a dataloader".capitalize()
+        )
         assert (
             self.init["test_dataloader"].__class__
         ) == torch.utils.data.dataloader.DataLoader, (
