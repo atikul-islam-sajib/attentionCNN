@@ -65,7 +65,10 @@ def helper(**kwargs):
 
     if adam:
         optimizer = optim.Adam(
-            params=model.parameters(), lr=lr, betas=(beta1, beta2), weight_decay=0.0001
+            params=model.parameters(),
+            lr=lr,
+            betas=(beta1, beta2),
+            weight_decay=config()["Trainer"]["weight_decay"],
         )
     elif SGD:
         optimizer = optim.SGD(params=model.parameters(), lr=lr, momentum=momentum)

@@ -35,6 +35,7 @@ Trainer:
   alpha: 0.25
   gamma: 2
   step_size: 20
+  weight_decay: 0.01
   device: "mps"
   lr_scheduler: False
   weight_init: False
