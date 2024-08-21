@@ -86,9 +86,9 @@ class Loader:
     def feature_extractor(self):
         self.directory = os.path.join(config()["path"]["RAW_PATH"], "dataset")
         self.train_directory = os.path.join(self.directory, "train")
-        # self.valid_directory = os.path.join(self.directory, "test")
+        self.valid_directory = os.path.join(self.directory, "test")
 
-        for directory in tqdm([self.train_directory]):
+        for directory in tqdm([self.train_directory, self.valid_directory]):
             self.images = os.path.join(directory, "image")
             self.masks = os.path.join(directory, "mask")
 
@@ -143,7 +143,6 @@ class Loader:
                 "valid_images": self.valid_images,
                 "valid_masks": self.valid_masks,
             }
-            return dataset
 
     def create_dataloader(self):
         train_dataset, valid_dataset = self.feature_extractor()
@@ -159,7 +158,9 @@ class Loader:
             shuffle=False,
         )
         valid_datalader = DataLoader(
-            dataset=zip(valid_dataset["valid_images"], valid_dataset["valid_masks"]),
+            dataset=list(
+                zip(valid_dataset["valid_images"], valid_dataset["valid_masks"])
+            ),
             batch_size=self.batch_size * 4,
             shuffle=False,
         )
