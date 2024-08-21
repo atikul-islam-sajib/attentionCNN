@@ -28,15 +28,15 @@ Trainer:
   beta1: 0.85
   beta2: 0.999
   momentum: 0.90
-  adam: True
-  SGD: False
-  loss: "mse"
   smooth: 1e-4
   alpha: 0.25
   gamma: 2
   step_size: 20
   weight_decay: 0.01
   device: "mps"
+  loss: "mse"
+  adam: True
+  SGD: False
   lr_scheduler: False
   weight_init: False
   l1_regularization: False
