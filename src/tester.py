@@ -128,6 +128,15 @@ class Tester:
             )
             plt.show()
 
+            print(
+                "Saved the result image to {}".format(
+                    os.path.join(
+                        config()["path"]["TEST_IMAGE"],
+                        "{}_result.png".format(self.data),
+                    )
+                )
+            )
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Tester code for attentionCNN".title())
