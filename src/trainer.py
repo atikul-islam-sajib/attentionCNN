@@ -2,6 +2,7 @@ import os
 import sys
 import torch
 import argparse
+import traceback
 import numpy as np
 import torch.nn as nn
 from tqdm import tqdm
@@ -363,109 +364,109 @@ if __name__ == "__main__":
     parser.add_argument(
         "--epochs",
         type=int,
-        default=config()["model"]["epochs"],
+        default=config()["Trainer"]["epochs"],
         help="number of epochs to train the model".capitalize(),
     )
     parser.add_argument(
         "--lr",
         type=float,
-        default=config()["model"]["lr"],
+        default=config()["Trainer"]["lr"],
         help="learning rate of the model".capitalize(),
     )
     parser.add_argument(
         "--momentum",
         type=float,
-        default=config()["model"]["momentum"],
+        default=config()["Trainer"]["momentum"],
         help="momentum of the model".capitalize(),
     )
     parser.add_argument(
         "--adam",
         type=bool,
-        default=config()["model"]["adam"],
+        default=config()["Trainer"]["adam"],
         help="adam optimizer of the model".capitalize(),
     )
     parser.add_argument(
         "--SGD",
         type=bool,
-        default=config()["model"]["SGD"],
+        default=config()["Trainer"]["SGD"],
         help="SGD optimizer of the model".capitalize(),
     )
     parser.add_argument(
         "--loss",
         type=str,
-        default=config()["model"]["loss"],
+        default=config()["Trainer"]["loss"],
         help="loss function of the model".capitalize(),
     )
     parser.add_argument(
         "--smooth",
         type=float,
-        default=config()["model"]["smooth"],
+        default=config()["Trainer"]["smooth"],
         help="smooth loss function of the model".capitalize(),
     )
     parser.add_argument(
         "--alpha",
         type=float,
-        default=config()["model"]["alpha"],
+        default=config()["Trainer"]["alpha"],
         help="alpha of the model".capitalize(),
     )
     parser.add_argument(
         "--beta1",
         type=float,
-        default=config()["model"]["beta1"],
+        default=config()["Trainer"]["beta1"],
         help="beta of the model".capitalize(),
     )
     parser.add_argument(
         "--beta2",
         type=float,
-        default=config()["model"]["beta2"],
+        default=config()["Trainer"]["beta2"],
         help="beta of the model".capitalize(),
     )
     parser.add_argument(
         "--step_size",
         type=int,
-        default=config()["model"]["step_size"],
+        default=config()["Trainer"]["step_size"],
         help="step size of the model".capitalize(),
     )
     parser.add_argument(
         "--device",
         type=str,
-        default=config()["model"]["device"],
+        default=config()["Trainer"]["device"],
         help="device of the model".capitalize(),
     )
     parser.add_argument(
         "--lr_scheduler",
         type=bool,
-        default=config()["model"]["lr_scheduler"],
+        default=config()["Trainer"]["lr_scheduler"],
         help="lr scheduler of the model".capitalize(),
     )
     parser.add_argument(
         "--l1_regularization",
         type=bool,
-        default=config()["model"]["l1_regularization"],
+        default=config()["Trainer"]["l1_regularization"],
         help="l1 regularization of the model".capitalize(),
     )
     parser.add_argument(
         "--l2_regularization",
         type=bool,
-        default=config()["model"]["l2_regularization"],
+        default=config()["Trainer"]["l2_regularization"],
         help="l2 regularization of the model".capitalize(),
     )
     parser.add_argument(
         "--elasticnet_regularization",
         type=bool,
-        default=config()["model"]["elasticnet_regularization"],
+        default=config()["Trainer"]["elasticnet_regularization"],
         help="elasticnet regularization of the model".capitalize(),
     )
     parser.add_argument(
         "--verbose",
         type=bool,
-        default=config()["model"]["verbose"],
+        default=config()["Trainer"]["verbose"],
         help="verbose of the model".capitalize(),
     )
     parser.add_argument(
         "--gamma",
         type=float,
-        default=config()["model"]["gamma"],
+        default=config()["Trainer"]["gamma"],
         help="gamma of the model".capitalize(),
     )
 
@@ -493,6 +494,16 @@ if __name__ == "__main__":
         model=None,
     )
 
-    trainer.train()
-
-    Trainer.display_history()
+    try:
+        trainer.train()
+    except KeyError as e:
+        print("An error occured while training the model", e)
+        traceback.print_exc()
+    except ValueError as e:
+        print("An error occured while training the model", e)
+        traceback.print_exc()
+    except Exception as e:
+        print("An error occured while training the model", e)
+        traceback.print_exc()
+    else:
+        Trainer.display_history()
