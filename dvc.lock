@@ -1,0 +1,91 @@
+schema: '2.0'
+stages:
+  model_train:
+    cmd: python src/cli.py --train
+    deps:
+    - path: ./artifacts/
+      hash: md5
+      md5: 5df3bf8abc62db04739978967a8e2327.dir
+      size: 2468201
+      nfiles: 21
+    - path: ./config.yml
+      hash: md5
+      md5: 3886c2a246ebf2212f40a9e3805d1117
+      size: 1230
+    - path: ./data/
+      hash: md5
+      md5: c3441a360950b004827b34eabe7a3279.dir
+      size: 134668555
+      nfiles: 210
+    - path: src/attentionCNN.py
+      hash: md5
+      md5: 7ba6065fc3e0c43d71182b1e8e2ced45
+      size: 6259
+    - path: src/attentionCNNBlock.py
+      hash: md5
+      md5: d515c4a7a8cfec46b5961d59b800abf6
+      size: 3168
+    - path: src/cli.py
+      hash: md5
+      md5: f773e5ee433946a07cdc37871242c42f
+      size: 6924
+    - path: src/dataloader.py
+      hash: md5
+      md5: fe9398ea9fedfd99e8743f265e2e64d0
+      size: 9092
+    - path: src/decoder_block.py
+      hash: md5
+      md5: a924bbf345f291a6b6ab0fbdd30babd3
+      size: 2800
+    - path: src/encoder_block.py
+      hash: md5
+      md5: 244620ea42169bf90ed67a96e0c7e9ee
+      size: 3013
+    - path: src/feedforward_network.py
+      hash: md5
+      md5: 6ecef4cd05d570ba62a5bbcd645a1be1
+      size: 3886
+    - path: src/helper.py
+      hash: md5
+      md5: e9911fd86f2f7408fe516bf01c4d1f58
+      size: 4289
+    - path: src/loss/
+      hash: md5
+      md5: 7c1580be0f448b54a92762dad26fd153.dir
+      size: 24638
+      nfiles: 18
+    - path: src/multihead_attention.py
+      hash: md5
+      md5: 73342e68724517833ad9940983ab1800
+      size: 4888
+    - path: src/scaled_dot_product.py
+      hash: md5
+      md5: 7d82e91b98a90cf2917d4aa3bbe2c4ba
+      size: 2138
+    - path: src/trainer.py
+      hash: md5
+      md5: fbdebc9e359d2417923a00d2fa596bf3
+      size: 19827
+    - path: src/utils.py
+      hash: md5
+      md5: c89b517524018624fef7f6f7c47dea24
+      size: 2175
+  model_eval:
+    cmd: python src/cli.py --test
+    deps:
+    - path: src/attentionCNN.py
+      hash: md5
+      md5: 7ba6065fc3e0c43d71182b1e8e2ced45
+      size: 6259
+    - path: src/attentionCNNBlock.py
+      hash: md5
+      md5: d515c4a7a8cfec46b5961d59b800abf6
+      size: 3168
+    - path: src/cli.py
+      hash: md5
+      md5: f773e5ee433946a07cdc37871242c42f
+      size: 6924
+    - path: src/tester.py
+      hash: md5
+      md5: 56941aab5f2eb2e107c0ec30bedfe07b
+      size: 9985

@@ -163,6 +163,12 @@ def cli():
         action="store_true",
         help="test the model".capitalize(),
     )
+    parser.add_argument(
+        "--mlflow",
+        type=bool,
+        default=config()["Trainer"]["mlflow"],
+        help="mlflow of the model".capitalize(),
+    )
 
     args = parser.parse_args()
 
@@ -205,6 +211,7 @@ def cli():
             adam=args.adam,
             SGD=args.SGD,
             verbose=args.verbose,
+            is_mlflow=args.mlflow,
             model=None,
         )
 
