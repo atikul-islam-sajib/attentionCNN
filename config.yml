@@ -49,7 +49,7 @@ Trainer:
   l1_regularization: False
   l2_regularization: False
   elasticnet_regularization: False
-  mlflow: True
+  mlflow: False
   verbose: True
 
 Tester:
