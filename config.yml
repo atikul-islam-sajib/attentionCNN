@@ -25,12 +25,13 @@ attentionCNN:
 
 MLFlow:
   MLFLOW_TRACKING_URI: "https://github.com/atikul-islam-sajib/attentionCNN.git"
+  MLFLOW_EXPERIMENT_NAME: "attentionCNN - 1"
   MLFLOW_USERNAME: "atikul-islam-sajib"
   MLFLOW_REPONAME: "attentionCNN"
-  MLFLOW_PASSWORD: "74d9f47e6bc7f8a7a170d258186fcdf18a099a99"
+  MLFLOW_PASSWORD: "74d9f47e6bc7f8a7a170d258186fcdf18a099a991"
 
 Trainer:
-  epochs: 2
+  epochs: 500
   lr: 0.0001
   beta1: 0.9
   beta2: 0.999

@@ -131,7 +131,7 @@ class Trainer:
             dagshub.init(
                 repo_owner=config()["MLFlow"]["MLFLOW_USERNAME"],
                 repo_name=config()["MLFlow"]["MLFLOW_REPONAME"],
-                mlflow=self.is_mlflow,
+                mlflow=False,
             )
 
         try:
@@ -146,6 +146,11 @@ class Trainer:
         self.loss = float("inf")
 
         self.model_history = {"train_loss": [], "test_loss": []}
+
+        experiment_id = mlflow.create_experiment(
+            config()["MLFlow"]["MLFLOW_EXPERIMENT_NAME"]
+        )
+        mlflow.set_experiment(experiment_id=experiment_id)
 
     def l1_loss(self, model=None):
         if isinstance(model, attentionCNN):

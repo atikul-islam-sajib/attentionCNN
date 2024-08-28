@@ -24,5 +24,3 @@ stages:
     deps:
       - src/cli.py
       - src/tester.py
-      - src/attentionCNNBlock.py
-      - src/attentionCNN.py

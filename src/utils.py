@@ -50,7 +50,6 @@ def config():
 def clean():
     config_files = config()
 
-    PROCESSED_PATH = config_files["path"]["PROCESSED_PATH"]
     FILES_PATH = config_files["path"]["FILES_PATH"]
     TRAIN_IMAGES = config_files["path"]["TRAIN_IMAGES"]
     TEST_IMAGE = config_files["path"]["TEST_IMAGE"]
@@ -59,7 +58,6 @@ def clean():
     METRICS_PATH = config_files["path"]["METRICS_PATH"]
 
     for path in [
-        PROCESSED_PATH,
         FILES_PATH,
         TRAIN_IMAGES,
         TEST_IMAGE,

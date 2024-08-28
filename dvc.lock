@@ -5,18 +5,18 @@ stages:
     deps:
     - path: ./artifacts/
       hash: md5
-      md5: 8becadb0cf43f347e740ae08b549beb1.dir
-      size: 2454267
+      md5: fa7d9129666529cbefd42e5e8a451758.dir
+      size: 972574221
       nfiles: 21
     - path: ./config.yml
       hash: md5
-      md5: 3886c2a246ebf2212f40a9e3805d1117
-      size: 1230
+      md5: 741696edfbd5f4e0fe614daf56395add
+      size: 1278
     - path: ./data/
       hash: md5
-      md5: 06ebe240ae0dd049b5c158201faa6e93.dir
-      size: 134662407
-      nfiles: 209
+      md5: 814b2fd7dd0600a6b7c2397b356c3a41.dir
+      size: 95279100
+      nfiles: 206
     - path: src/attentionCNN.py
       hash: md5
       md5: 7ba6065fc3e0c43d71182b1e8e2ced45
@@ -64,12 +64,12 @@ stages:
       size: 2138
     - path: src/trainer.py
       hash: md5
-      md5: fbdebc9e359d2417923a00d2fa596bf3
-      size: 19827
+      md5: 75a4ddc00e19e49aadc88bc3276f0237
+      size: 19995
     - path: src/utils.py
       hash: md5
-      md5: 69be4797fef7d42897751cc31b930a9b
-      size: 2159
+      md5: fe4e9a2d9428d5e8cce934bcd9087a1d
+      size: 2093
   model_eval:
     cmd: python src/cli.py --test
     deps:
