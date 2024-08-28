@@ -50,7 +50,7 @@ class Loader:
     def image_transforms(self):
         return transforms.Compose(
             [
-                transforms.Resize((self.image_size, self.image_size)),
+                transforms.Resize((self.image_size, self.image_size), Image.BICUBIC),
                 transforms.ToTensor(),
                 transforms.CenterCrop((self.image_size, self.image_size)),
                 transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
@@ -60,7 +60,7 @@ class Loader:
     def mask_transforms(self):
         return transforms.Compose(
             [
-                transforms.Resize((self.image_size, self.image_size)),
+                transforms.Resize((self.image_size, self.image_size), Image.BICUBIC),
                 transforms.ToTensor(),
                 transforms.CenterCrop((self.image_size, self.image_size)),
                 transforms.Normalize((0.5,), (0.5,)),
@@ -104,13 +104,15 @@ class Loader:
                     extracted_mask = cv2.imread(mask)
 
                     extracted_image = cv2.cvtColor(extracted_image, cv2.COLOR_BGR2RGB)
-                    extracted_mask = cv2.cvtColor(extracted_mask, cv2.COLOR_RGB2GRAY)
+                    # extracted_mask = cv2.cvtColor(extracted_mask, cv2.COLOR_RGB2GRAY)
+                    extracted_mask = cv2.cvtColor(extracted_mask, cv2.COLOR_BGR2RGB)
 
                     extracted_image = Image.fromarray(extracted_image)
                     extracted_mask = Image.fromarray(extracted_mask)
 
                     extracted_image = self.image_transforms()(extracted_image)
-                    extracted_mask = self.mask_transforms()(extracted_mask)
+                    # extracted_mask = self.mask_transforms()(extracted_mask)
+                    extracted_mask = self.image_transforms()(extracted_mask)
 
                     if directory.split("/")[-1] == "train":
                         self.train_images.append(extracted_image)
@@ -195,7 +197,7 @@ class Loader:
 
         for index, image in enumerate(images):
             image = image.squeeze().permute(1, 2, 0).detach().cpu().numpy()
-            mask = maks[index].squeeze().detach().cpu().numpy()
+            mask = maks[index].permute(1, 2, 0).squeeze().detach().cpu().numpy()
 
             image = (image - image.min()) / (image.max() - image.min())
             mask = (mask - mask.min()) / (mask.max() - mask.min())

@@ -33,7 +33,14 @@ class EncoderBlock(nn.Module):
                     stride=self.stride_size,
                     padding=self.padding_size,
                 ),
-                nn.LeakyReLU(negative_slope=0.2, inplace=True),
+                nn.ReLU(inplace=True),
+                nn.Conv2d(
+                    in_channels=self.out_channels,
+                    out_channels=self.out_channels,
+                    kernel_size=self.kernel_size - 1,
+                    stride=self.stride_size // self.stride_size,
+                    padding=self.padding_size,
+                ),
             )
         )
 

@@ -1,12 +1,12 @@
 import os
 import sys
 import torch
+import mlflow
+import dagshub
 import argparse
 import traceback
 import numpy as np
-import torch.nn as nn
 from tqdm import tqdm
-import torch.optim as optim
 import matplotlib.pyplot as plt
 from torchvision.utils import save_image
 from torch.optim.lr_scheduler import StepLR
@@ -15,7 +15,14 @@ sys.path.append("./src/")
 
 from helper import helper
 from attentionCNN import attentionCNN
-from utils import config, device_init, dump, load
+from utils import (
+    dump,
+    load,
+    clean,
+    config,
+    device_init,
+    weight_init,
+)
 
 
 class Trainer:
@@ -39,6 +46,8 @@ class Trainer:
         l1_regularization: bool = False,
         l2_regularization: bool = False,
         elasticnet_regularization: bool = False,
+        is_weight_int: bool = False,
+        is_mlflow: bool = False,
         verbose: bool = True,
     ):
         self.model = model
@@ -59,6 +68,8 @@ class Trainer:
         self.l1_regularization = l1_regularization
         self.l2_regularization = l2_regularization
         self.elasticnet_regularization = elasticnet_regularization
+        self.is_weight_int = is_weight_int
+        self.is_mlflow = is_mlflow
         self.verbose = verbose
 
         self.device = device_init(
@@ -107,14 +118,30 @@ class Trainer:
         assert (
             self.init["model"].__class__
         ) == attentionCNN, "model is not a model".capitalize()
-        assert (
-            self.init["optimizer"].__class__
-        ) == optim.Adam, "optimizer is not an optimizer".capitalize()
 
         if self.lr_scheduler:
             self.scheduler = StepLR(
                 optimizer=self.optimizer, step_size=self.step_size, gamma=self.gamma
             )
+
+        if self.is_weight_int:
+            self.model.apply(weight_init)
+
+        if self.is_mlflow:
+            dagshub.init(
+                repo_owner=config()["MLFlow"]["MLFLOW_USERNAME"],
+                repo_name=config()["MLFlow"]["MLFLOW_REPONAME"],
+                mlflow=self.is_mlflow,
+            )
+
+        try:
+            clean()
+        except FileNotFoundError as e:
+            print("An error occurred: " + str(e))
+            traceback.print_exc()
+        except Exception as e:
+            print("An error occurred: " + str(e))
+            traceback.print_exc()
 
         self.loss = float("inf")
 
@@ -247,85 +274,134 @@ class Trainer:
                 )
 
     def train(self):
-        for epoch in tqdm(range(self.epochs)):
-            train_loss = []
-            valid_loss = []
+        with mlflow.start_run():
+            for epoch in tqdm(range(self.epochs)):
+                train_loss = []
+                valid_loss = []
 
-            for _, (image, mask) in enumerate(self.train_dataloader):
-                image = image.to(self.device)
-                mask = mask.to(self.device)
+                for _, (image, mask) in enumerate(self.train_dataloader):
+                    image = image.to(self.device)
+                    mask = mask.to(self.device)
+
+                    try:
+                        train_loss.append(
+                            self.updated_training_model(image=image, mask=mask)
+                        )
+                    except KeyError as e:
+                        print("An error occured: {}".format(e))
+                    except Exception as e:
+                        print("An error occured: {}".format(e))
+
+                for _, (image, mask) in enumerate(self.test_dataloader):
+                    image = image.to(self.device)
+                    mask = mask.to(self.device)
+
+                    predicted = self.model(image)
+
+                    valid_loss.append(self.criterion(predicted, mask).item())
+
+                if self.lr_scheduler:
+                    self.scheduler.step()
 
                 try:
-                    train_loss.append(
-                        self.updated_training_model(image=image, mask=mask)
+                    self.display_progress(
+                        epoch=epoch + 1,
+                        train_loss=np.mean(train_loss),
+                        valid_loss=np.mean(valid_loss),
                     )
                 except KeyError as e:
-                    print("An error occured: {}".format(e))
+                    print("An error occured: {}".format(e).capitalize())
                 except Exception as e:
-                    print("An error occured: {}".format(e))
+                    print("An error occured: {}".format(e).capitalize())
 
-            for _, (image, mask) in enumerate(self.test_dataloader):
-                image = image.to(self.device)
-                mask = mask.to(self.device)
+                try:
+                    self.saved_training_images(epoch=epoch)
+                except KeyError as e:
+                    print("An error occured: {}".format(e).capitalize())
+                except Exception as e:
+                    print("An error occured: {}".format(e).capitalize())
 
-                predicted = self.model(image)
+                try:
+                    self.saved_training_images(epoch=epoch)
+                except KeyError as e:
+                    print("An error occured: {}".format(e).capitalize())
+                except Exception as e:
+                    print("An error occured: {}".format(e).capitalize())
 
-                valid_loss.append(self.criterion(predicted, mask).item())
+                try:
+                    self.saved_checkpoints(
+                        epoch=epoch,
+                        train_loss=np.mean(train_loss),
+                        valid_loss=np.mean(valid_loss),
+                    )
+                except KeyError as e:
+                    print("An error occured in : {}".format(e).capitalize())
+                except Exception as e:
+                    print("An error occuredin in: {}".format(e).capitalize())
 
-            if self.lr_scheduler:
-                self.scheduler.step()
+                try:
+                    self.model_history["train_loss"].append(np.mean(train_loss))
+                    self.model_history["test_loss"].append(np.mean(valid_loss))
+                except Exception as e:
+                    print("An error occured: {}".format(e).capitalize())
+
+                try:
+                    mlflow.log_params(
+                        {
+                            "channels": str(config()["attentionCNN"]["image_channels"]),
+                            "image_size": str(config()["attentionCNN"]["image_size"]),
+                            "nheads": str(config()["attentionCNN"]["nheads"]),
+                            "dropout": str(config()["attentionCNN"]["dropout"]),
+                            "num_layers": str(config()["attentionCNN"]["num_layers"]),
+                            "activation": str(config()["attentionCNN"]["activation"]),
+                            "bias": str(config()["attentionCNN"]["bias"]),
+                            "num_epochs": str(self.epochs),
+                            "lr": str(self.lr),
+                            "beta1": str(self.beta1),
+                            "beta2": str(self.beta2),
+                            "momentum": str(self.momentum),
+                            "adam": str(self.adam),
+                            "SGD": str(self.SGD),
+                            "optimizer": self.optimizer,
+                            "smooth": str(self.smooth),
+                            "alpha": str(self.alpha),
+                            "gamma": str(self.gamma),
+                            "step_size": str(self.step_size),
+                            "device": str(self.device),
+                            "lr_scheduler": self.lr_scheduler,
+                            "l1_regularization": str(self.l1_regularization),
+                            "l2_regularization": str(self.l2_regularization),
+                            "elasticnet_regularization": str(
+                                self.elasticnet_regularization
+                            ),
+                            "is_weight_int": str(self.is_weight_int),
+                            "is_mlflow": str(self.is_mlflow),
+                            "verbose": str(self.verbose),
+                        }
+                    )
+
+                    mlflow.log_metric("train_loss", np.mean(train_loss), step=epoch + 1)
+                    mlflow.log_metric("val_loss", np.mean(valid_loss), step=epoch + 1)
+
+                except Exception as e:
+                    print("An error occured in the MLFflow log_params: {}".format(e))
+                    traceback.print_exc()
+
+            dump(
+                value=self.model_history,
+                filename=os.path.join(config()["path"]["METRICS_PATH"], "history.pkl"),
+            )
+            print(
+                "Model history saved in the folder {}".format(
+                    config()["path"]["METRICS_PATH"]
+                ).capitalize()
+            )
 
             try:
-                self.display_progress(
-                    epoch=epoch + 1,
-                    train_loss=np.mean(train_loss),
-                    valid_loss=np.mean(valid_loss),
-                )
-            except KeyError as e:
-                print("An error occured: {}".format(e).capitalize())
+                mlflow.pytorch.log_model(self.model, "attentionCNNModel")
             except Exception as e:
-                print("An error occured: {}".format(e).capitalize())
-
-            try:
-                self.saved_training_images(epoch=epoch)
-            except KeyError as e:
-                print("An error occured: {}".format(e).capitalize())
-            except Exception as e:
-                print("An error occured: {}".format(e).capitalize())
-
-            try:
-                self.saved_training_images(epoch=epoch)
-            except KeyError as e:
-                print("An error occured: {}".format(e).capitalize())
-            except Exception as e:
-                print("An error occured: {}".format(e).capitalize())
-
-            try:
-                self.saved_checkpoints(
-                    epoch=epoch,
-                    train_loss=np.mean(train_loss),
-                    valid_loss=np.mean(valid_loss),
-                )
-            except KeyError as e:
-                print("An error occured in : {}".format(e).capitalize())
-            except Exception as e:
-                print("An error occuredin in: {}".format(e).capitalize())
-
-            try:
-                self.model_history["train_loss"].append(np.mean(train_loss))
-                self.model_history["test_loss"].append(np.mean(valid_loss))
-            except Exception as e:
-                print("An error occured: {}".format(e).capitalize())
-
-        dump(
-            value=self.model_history,
-            filename=os.path.join(config()["path"]["METRICS_PATH"], "history.pkl"),
-        )
-        print(
-            "Model history saved in the folder {}".format(
-                config()["path"]["METRICS_PATH"]
-            ).capitalize()
-        )
+                print("An error occured in the MLFflow log_params: {}".format(e))
+                traceback.print_exc()
 
     @staticmethod
     def display_history():
@@ -469,6 +545,12 @@ if __name__ == "__main__":
         default=config()["Trainer"]["gamma"],
         help="gamma of the model".capitalize(),
     )
+    parser.add_argument(
+        "--mlflow",
+        type=bool,
+        default=config()["Trainer"]["mlflow"],
+        help="mlflow of the model".capitalize(),
+    )
 
     args = parser.parse_args()
 
@@ -491,6 +573,7 @@ if __name__ == "__main__":
         adam=args.adam,
         SGD=args.SGD,
         verbose=args.verbose,
+        is_mlflow=args.mlflow,
         model=None,
     )
 

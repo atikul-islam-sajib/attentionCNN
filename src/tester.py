@@ -4,7 +4,9 @@ import math
 import torch
 import argparse
 import torch.nn as nn
+import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
 
 sys.path.append("./src/")
 
@@ -41,6 +43,118 @@ class Tester:
 
         else:
             raise ValueError("Invalid data type".capitalize())
+
+    def compute_iou(self, predicted_mask, real_mask, threshold=0.4):
+        """
+        Compute the Intersection over Union (IoU) between the predicted mask and the real mask using PyTorch.
+
+        Parameters:
+        - predicted_mask: A 2D or 3D PyTorch tensor with predicted mask values (continuous or binary).
+        - real_mask: A 2D or 3D PyTorch tensor with the real mask values (binary).
+        - threshold: A float value to threshold the predicted mask if it contains continuous values.
+
+        Returns:
+        - iou: The IoU score as a float.
+        """
+        # # Apply threshold to predictions to convert them to binary
+        # y_pred = (predicted_mask >= threshold).to(torch.int)
+        # y_true = real_mask.to(torch.int)
+
+        # # Flatten the tensors
+        # y_pred_flat = y_pred.view(y_pred.size(0), -1)
+        # y_true_flat = y_true.view(y_true.size(0), -1)
+
+        # # Initialize an array to store IoU for each image in the batch
+        # iou_scores = []
+
+        # for i in range(y_pred.size(0)):
+        #     # Compute confusion matrix for each image in the batch
+        #     current = confusion_matrix(
+        #         y_true_flat[i].cpu().numpy(),
+        #         y_pred_flat[i].cpu().numpy(),
+        #         labels=[0, 1],
+        #     )
+
+        #     # Intersection: Diagonal of the confusion matrix (True Positives for each class)
+        #     intersection = np.diag(current)
+
+        #     # Ground truth set (sum of each row in the confusion matrix)
+        #     ground_truth_set = current.sum(axis=1)
+
+        #     # Predicted set (sum of each column in the confusion matrix)
+        #     predicted_set = current.sum(axis=0)
+
+        #     # Union: Ground truth + predicted - intersection
+        #     union = ground_truth_set + predicted_set - intersection
+
+        #     # IoU for each class
+        #     IoU = intersection / union.astype(np.float32)
+
+        #     # Store the mean IoU for this image
+        #     iou_scores.append(np.mean(IoU))
+
+        # # Calculate the mean IoU across the batch
+        # mean_iou = np.mean(iou_scores)
+
+        # return mean_iou
+
+        binary_pred_masks = (predicted_mask >= threshold).to(torch.bool)
+
+        # Ensure real_masks are binary and convert to boolean
+        binary_real_masks = (real_mask >= threshold).to(torch.bool)
+
+        # Calculate intersection and union for each image in the batch
+        intersection = torch.logical_and(binary_pred_masks, binary_real_masks).sum(
+            dim=(1, 2, 3)
+        )
+        union = torch.logical_or(binary_pred_masks, binary_real_masks).sum(
+            dim=(1, 2, 3)
+        )
+
+        # Calculate IoU for each image in the batch
+        iou = torch.where(
+            union == 0,
+            torch.ones_like(intersection, dtype=torch.float),
+            intersection.float() / union.float(),
+        )
+
+        # Calculate the mean IoU across the batch
+        mean_iou = iou.mean().item()
+
+        return mean_iou
+
+    def compute_dice_score(self, y_pred, y_true, threshold=0.5):
+        """
+        Compute the Dice Score for a batch of predicted masks and real masks using PyTorch.
+
+        Parameters:
+        - y_pred: A 4D PyTorch tensor with predicted mask values (batch_size, channels, height, width).
+        - y_true: A 4D PyTorch tensor with the real mask values (binary, same dimensions as y_pred).
+        - threshold: A float value to threshold the predicted masks if they contain continuous values.
+
+        Returns:
+        - mean_dice: The average Dice score across the batch as a float.
+        """
+
+        # Apply threshold to predictions to convert them to binary
+        y_pred = (y_pred >= threshold).float()
+        y_true = y_true.float()
+
+        # Flatten the tensors to compute the Dice score across each image
+        y_pred_flat = y_pred.view(y_pred.size(0), -1)
+        y_true_flat = y_true.view(y_true.size(0), -1)
+
+        # Calculate intersection and union
+        intersection = (y_pred_flat * y_true_flat).sum(dim=1)
+        union = y_pred_flat.sum(dim=1) + y_true_flat.sum(dim=1)
+
+        # Compute the Dice score for each image in the batch
+        dice = 2 * intersection / union
+
+        # Calculate the mean Dice score across the batch
+        mean_dice = dice.mean().item()
+
+        return 1 - mean_dice
 
     def select_model(self):
         try:
@@ -80,6 +194,14 @@ class Tester:
 
             predicted = model(images.to(self.device))
             mask = mask.to(self.device)
+
+            IOU = self.compute_iou(predicted_mask=predicted, real_mask=mask)
+
+            print(IOU)
+
+            DICE = self.compute_dice_score(y_pred=predicted, y_true=mask)
+
+            print(DICE)
 
             plt.figure(figsize=(num_of_rows * 10, num_of_cols * 5))
 

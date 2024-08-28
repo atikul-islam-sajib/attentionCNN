@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/shahmuhammadraditrahman/Desktop/attentionCNN/mlruns/0/cb2f0065a09d41e1a505694c75dec9ec/artifacts
+end_time: 1724868351851
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: cb2f0065a09d41e1a505694c75dec9ec
+run_name: righteous-chimp-987
+run_uuid: cb2f0065a09d41e1a505694c75dec9ec
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1724868332882
+status: 3
+tags: []
+user_id: shahmuhammadraditrahman

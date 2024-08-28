@@ -33,7 +33,14 @@ class DecoderBlock(nn.Module):
                     stride=self.stride_size,
                     padding=self.padding_size,
                 ),
-                nn.ReLU(),
+                nn.ReLU(inplace=True),
+                nn.Conv2d(
+                    in_channels=self.out_channels,
+                    out_channels=self.out_channels,
+                    kernel_size=3,
+                    stride=1,
+                    padding=1,
+                ),
             )
         )
 

@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/shahmuhammadraditrahman/Desktop/attentionCNN/mlruns/0/69eac2052d7b4e5982fc3e86d81fcdf9/artifacts
+end_time: 1724868322144
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 69eac2052d7b4e5982fc3e86d81fcdf9
+run_name: dazzling-shad-76
+run_uuid: 69eac2052d7b4e5982fc3e86d81fcdf9
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1724868302593
+status: 3
+tags: []
+user_id: shahmuhammadraditrahman

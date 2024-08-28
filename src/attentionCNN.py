@@ -93,8 +93,8 @@ class attentionCNN(nn.Module):
 
         self.output_block = nn.Conv2d(
             in_channels=self.image_size,
-            out_channels=self.image_channels // self.image_channels,
-            # out_channels=self.image_channels,
+            # out_channels=self.image_channels // self.image_channels,
+            out_channels=self.image_channels,
             kernel_size=self.kernel_size,
             stride=self.stride_size,
             padding=self.padding_size,
@@ -189,13 +189,19 @@ if __name__ == "__main__":
         bias=True,
     )
 
+    print(
+        attention_cnn(
+            torch.randn(batch_size, args.image_channels, image_size, image_size)
+        ).size()
+    )
+
     assert (
         attention_cnn(
             torch.randn(batch_size, args.image_channels, image_size, image_size)
         ).size()
     ) == (
         batch_size,
-        args.image_channels,
+        args.image_channels // args.image_channels,
         image_size,
         image_size,
     ), "Output size of the attentionCNN is incorrect".capitalize()

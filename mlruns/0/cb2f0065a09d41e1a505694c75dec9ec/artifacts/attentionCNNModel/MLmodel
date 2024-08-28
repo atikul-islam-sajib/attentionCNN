@@ -1,0 +1,19 @@
+artifact_path: attentionCNNModel
+flavors:
+  python_function:
+    data: data
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.pytorch
+    pickle_module_name: mlflow.pytorch.pickle_module
+    python_version: 3.9.18
+  pytorch:
+    code: null
+    model_data: data
+    pytorch_version: 2.1.2
+mlflow_version: 2.8.0
+model_size_bytes: 194821974
+model_uuid: 82c9e11d478f470b9486cb1ebd975da2
+run_id: cb2f0065a09d41e1a505694c75dec9ec
+utc_time_created: '2024-08-28 18:05:49.285514'

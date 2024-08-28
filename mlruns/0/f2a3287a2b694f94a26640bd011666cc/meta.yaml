@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/shahmuhammadraditrahman/Desktop/attentionCNN/mlruns/0/f2a3287a2b694f94a26640bd011666cc/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: f2a3287a2b694f94a26640bd011666cc
+run_name: angry-panda-333
+run_uuid: f2a3287a2b694f94a26640bd011666cc
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1724868045145
+status: 1
+tags: []
+user_id: shahmuhammadraditrahman

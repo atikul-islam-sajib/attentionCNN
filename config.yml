@@ -11,7 +11,7 @@ path:
 dataloader:
   image_path: "./data/raw/dataset.zip"
   image_size: 128
-  batch_size: 8
+  batch_size: 4
   split_size: 0.20
 
 attentionCNN:
@@ -19,21 +19,27 @@ attentionCNN:
   image_size: 128
   nheads: 8
   dropout: 0.1
-  num_layers: 1
+  num_layers: 2
   activation: "relu"
   bias: True
 
+MLFlow:
+  MLFLOW_TRACKING_URI: "https://github.com/atikul-islam-sajib/attentionCNN.git"
+  MLFLOW_USERNAME: "atikul-islam-sajib"
+  MLFLOW_REPONAME: "attentionCNN"
+  MLFLOW_PASSWORD: "74d9f47e6bc7f8a7a170d258186fcdf18a099a99"
+
 Trainer:
-  epochs: 700
+  epochs: 300
   lr: 0.0001
   beta1: 0.9
   beta2: 0.999
-  momentum: 0.90
+  momentum: 0.95
   smooth: 1e-4
   alpha: 0.25
   gamma: 2
   step_size: 20
-  weight_decay: 0.01
+  weight_decay: 0.001
   device: "mps"
   loss: "mse"
   adam: True
@@ -43,6 +49,7 @@ Trainer:
   l1_regularization: False
   l2_regularization: False
   elasticnet_regularization: False
+  mlflow: True
   verbose: True
 
 Tester:
