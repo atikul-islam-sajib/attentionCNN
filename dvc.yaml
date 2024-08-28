@@ -33,3 +33,16 @@ stages:
       - src/tester.py
       - src/attentionCNNBlock.py
       - src/attentionCNN.py
+
+
+    deps:
+      - src/cli.py
+      - src/dataloader.py
+      - src/decoder_block.py
+      - src/encoder_block.py
+      - src/feedforward_network.py
+      - src/helper.py
+      - src/loss/bce_loss.py
+      - src/loss/combo_loss.py
+      - src/dice_loss.py
+      - src/focal_loss.py
