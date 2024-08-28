@@ -46,7 +46,7 @@ class Trainer:
         l1_regularization: bool = False,
         l2_regularization: bool = False,
         elasticnet_regularization: bool = False,
-        is_weight_int: bool = False,
+        is_weight_init: bool = False,
         is_mlflow: bool = False,
         verbose: bool = True,
     ):
@@ -68,7 +68,7 @@ class Trainer:
         self.l1_regularization = l1_regularization
         self.l2_regularization = l2_regularization
         self.elasticnet_regularization = elasticnet_regularization
-        self.is_weight_int = is_weight_int
+        self.is_weight_init = is_weight_init
         self.is_mlflow = is_mlflow
         self.verbose = verbose
 
@@ -124,7 +124,7 @@ class Trainer:
                 optimizer=self.optimizer, step_size=self.step_size, gamma=self.gamma
             )
 
-        if self.is_weight_int:
+        if self.is_weight_init:
             self.model.apply(weight_init)
 
         if self.is_mlflow:

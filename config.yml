@@ -11,14 +11,14 @@ path:
 dataloader:
   image_path: "./data/raw/dataset.zip"
   image_size: 128
-  batch_size: 4
+  batch_size: 16
   split_size: 0.20
 
 attentionCNN:
   image_channels: 3
   image_size: 128
   nheads: 8
-  dropout: 0.1
+  dropout: 0.3
   num_layers: 2
   activation: "relu"
   bias: True
@@ -50,7 +50,7 @@ Trainer:
   l1_regularization: False
   l2_regularization: False
   elasticnet_regularization: False
-  mlflow: False
+  mlflow: True
   verbose: True
 
 Tester:

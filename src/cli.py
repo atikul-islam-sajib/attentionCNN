@@ -169,6 +169,12 @@ def cli():
         default=config()["Trainer"]["mlflow"],
         help="mlflow of the model".capitalize(),
     )
+    parser.add_argument(
+        "weight_init",
+        type=bool,
+        default=config()["Trainer"]["weight_init"],
+        help="Weight initialization of the model".capitalize(),
+    )
 
     args = parser.parse_args()
 
@@ -212,6 +218,7 @@ def cli():
             SGD=args.SGD,
             verbose=args.verbose,
             is_mlflow=args.mlflow,
+            is_weight_init=args.weight_init,
             model=None,
         )
 
