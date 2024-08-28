@@ -5,8 +5,8 @@ stages:
     deps:
     - path: ./artifacts/
       hash: md5
-      md5: b5b27eaf1ddecfdd222e7733b9ea5ee8.dir
-      size: 2465613
+      md5: 8becadb0cf43f347e740ae08b549beb1.dir
+      size: 2454267
       nfiles: 21
     - path: ./config.yml
       hash: md5
@@ -14,9 +14,9 @@ stages:
       size: 1230
     - path: ./data/
       hash: md5
-      md5: dbbc32e034fa012ec23b4d00402ae965.dir
-      size: 134668555
-      nfiles: 210
+      md5: 06ebe240ae0dd049b5c158201faa6e93.dir
+      size: 134662407
+      nfiles: 209
     - path: src/attentionCNN.py
       hash: md5
       md5: 7ba6065fc3e0c43d71182b1e8e2ced45
@@ -68,8 +68,8 @@ stages:
       size: 19827
     - path: src/utils.py
       hash: md5
-      md5: c89b517524018624fef7f6f7c47dea24
-      size: 2175
+      md5: 69be4797fef7d42897751cc31b930a9b
+      size: 2159
   model_eval:
     cmd: python src/cli.py --test
     deps:
