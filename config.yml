@@ -33,7 +33,7 @@ MLFlow:
 Trainer:
   epochs: 500
   lr: 0.0001
-  beta1: 0.9
+  beta1: 0.75
   beta2: 0.999
   momentum: 0.95
   smooth: 1e-4
@@ -46,7 +46,7 @@ Trainer:
   adam: True
   SGD: False
   lr_scheduler: False
-  weight_init: False
+  weight_init: True
   l1_regularization: False
   l2_regularization: False
   elasticnet_regularization: False

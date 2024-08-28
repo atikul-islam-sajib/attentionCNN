@@ -170,7 +170,7 @@ def cli():
         help="mlflow of the model".capitalize(),
     )
     parser.add_argument(
-        "weight_init",
+        "--weight_init",
         type=bool,
         default=config()["Trainer"]["weight_init"],
         help="Weight initialization of the model".capitalize(),
