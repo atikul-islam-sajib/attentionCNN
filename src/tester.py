@@ -56,54 +56,10 @@ class Tester:
         Returns:
         - iou: The IoU score as a float.
         """
-        # # Apply threshold to predictions to convert them to binary
-        # y_pred = (predicted_mask >= threshold).to(torch.int)
-        # y_true = real_mask.to(torch.int)
-
-        # # Flatten the tensors
-        # y_pred_flat = y_pred.view(y_pred.size(0), -1)
-        # y_true_flat = y_true.view(y_true.size(0), -1)
-
-        # # Initialize an array to store IoU for each image in the batch
-        # iou_scores = []
-
-        # for i in range(y_pred.size(0)):
-        #     # Compute confusion matrix for each image in the batch
-        #     current = confusion_matrix(
-        #         y_true_flat[i].cpu().numpy(),
-        #         y_pred_flat[i].cpu().numpy(),
-        #         labels=[0, 1],
-        #     )
-
-        #     # Intersection: Diagonal of the confusion matrix (True Positives for each class)
-        #     intersection = np.diag(current)
-
-        #     # Ground truth set (sum of each row in the confusion matrix)
-        #     ground_truth_set = current.sum(axis=1)
-
-        #     # Predicted set (sum of each column in the confusion matrix)
-        #     predicted_set = current.sum(axis=0)
-
-        #     # Union: Ground truth + predicted - intersection
-        #     union = ground_truth_set + predicted_set - intersection
-
-        #     # IoU for each class
-        #     IoU = intersection / union.astype(np.float32)
-
-        #     # Store the mean IoU for this image
-        #     iou_scores.append(np.mean(IoU))
-
-        # # Calculate the mean IoU across the batch
-        # mean_iou = np.mean(iou_scores)
-
-        # return mean_iou
 
         binary_pred_masks = (predicted_mask >= threshold).to(torch.bool)
-
-        # Ensure real_masks are binary and convert to boolean
         binary_real_masks = (real_mask >= threshold).to(torch.bool)
 
-        # Calculate intersection and union for each image in the batch
         intersection = torch.logical_and(binary_pred_masks, binary_real_masks).sum(
             dim=(1, 2, 3)
         )
@@ -111,14 +67,12 @@ class Tester:
             dim=(1, 2, 3)
         )
 
-        # Calculate IoU for each image in the batch
         iou = torch.where(
             union == 0,
             torch.ones_like(intersection, dtype=torch.float),
             intersection.float() / union.float(),
         )
 
-        # Calculate the mean IoU across the batch
         mean_iou = iou.mean().item()
 
         return mean_iou
@@ -136,22 +90,17 @@ class Tester:
         - mean_dice: The average Dice score across the batch as a float.
         """
 
-        # Apply threshold to predictions to convert them to binary
         y_pred = (y_pred >= threshold).float()
         y_true = y_true.float()
 
-        # Flatten the tensors to compute the Dice score across each image
         y_pred_flat = y_pred.view(y_pred.size(0), -1)
         y_true_flat = y_true.view(y_true.size(0), -1)
 
-        # Calculate intersection and union
         intersection = (y_pred_flat * y_true_flat).sum(dim=1)
         union = y_pred_flat.sum(dim=1) + y_true_flat.sum(dim=1)
 
-        # Compute the Dice score for each image in the batch
         dice = 2 * intersection / union
 
-        # Calculate the mean Dice score across the batch
         mean_dice = dice.mean().item()
 
         return 1 - mean_dice
@@ -195,13 +144,7 @@ class Tester:
             predicted = model(images.to(self.device))
             mask = mask.to(self.device)
 
-            IOU = self.compute_iou(predicted_mask=predicted, real_mask=mask)
-
-            print(IOU)
-
-            DICE = self.compute_dice_score(y_pred=predicted, y_true=mask)
-
-            print(DICE)
+            IoU = self.compute_iou(predicted_mask=predicted, real_mask=mask)
 
             plt.figure(figsize=(num_of_rows * 10, num_of_cols * 5))
 
@@ -251,8 +194,9 @@ class Tester:
             plt.show()
 
             print(
-                "Saved the result image to {}".format(
+                "IoU score # {:.4f} and result image saved the result image to {}".format(
                     os.path.join(
+                        IoU,
                         config()["path"]["TEST_IMAGE"],
                         "{}_result.png".format(self.data),
                     )
