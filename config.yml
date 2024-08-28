@@ -30,7 +30,7 @@ MLFlow:
   MLFLOW_PASSWORD: "74d9f47e6bc7f8a7a170d258186fcdf18a099a99"
 
 Trainer:
-  epochs: 300
+  epochs: 2
   lr: 0.0001
   beta1: 0.9
   beta2: 0.999

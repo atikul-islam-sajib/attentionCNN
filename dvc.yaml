@@ -8,14 +8,7 @@ stages:
       - src/encoder_block.py
       - src/feedforward_network.py
       - src/helper.py
-      - src/loss/bce_loss.py
-      - src/loss/combo_loss.py
-      - src/dice_loss.py
-      - src/focal_loss.py
-      - src/jaccard_loss.py
-      - src/mse_loss.py
-      - src/mse_loss.py
-      - src/tversky_loss.py
+      - src/loss/
       - src/multihead_attention.py
       - src/scaled_dot_product.py
       - src/trainer.py
