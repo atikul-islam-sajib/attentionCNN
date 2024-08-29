@@ -131,7 +131,7 @@ class Trainer:
             dagshub.init(
                 repo_owner=config()["MLFlow"]["MLFLOW_USERNAME"],
                 repo_name=config()["MLFlow"]["MLFLOW_REPONAME"],
-                mlflow=False,
+                mlflow=self.is_mlflow,
             )
 
         try:
