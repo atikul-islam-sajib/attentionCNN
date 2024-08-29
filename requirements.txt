@@ -10,3 +10,4 @@ torch
 torchaudio
 torchvision
 torchsummary
+torchview
