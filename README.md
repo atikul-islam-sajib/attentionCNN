@@ -28,7 +28,7 @@ pip install -r requirements.txt
 
 ## Usage
 
-The repository provides scripts and notebooks to help you understand and experiment with the ViT. Below is an example script that demonstrates how to initialize the ViT, create random input tensors, and print the shapes of the embedding and output tensors.
+The repository provides scripts and notebooks to help you understand and experiment with the attentionCNN. Below is an example script that demonstrates how to initialize the attentionCNN, create random input tensors, and print the shapes of the embedding and output tensors.
 
 ## Project Structure
 ```
