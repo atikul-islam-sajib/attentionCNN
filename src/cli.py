@@ -187,7 +187,7 @@ def cli():
         )
 
         try:
-            # loader.unzip_folder()
+            loader.unzip_folder()
             loader.create_dataloader()
 
             loader.display_images()
