@@ -171,9 +171,6 @@ Tester:
   device: "mps"                                           # Device to use for testing (e.g., cpu, cuda, mps)
 ```
 
-This version includes comments explaining the purpose of each configuration option, making it easier to understand and modify as needed.
-```
-
 ### Configuration for MLFlow
 
 1. **Generate a Personal Access Token on DagsHub**:
