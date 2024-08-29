@@ -97,6 +97,10 @@ dataset/  # Folder name must be 'dataset'
 │   ├── ...
 ```
 
+### User Guide Notebook (Tutorial for inferencing)
+
+For detailed documentation on the implementation and usage, visit the -> [attentionCNN Tutorial Notebook](https://github.com/atikul-islam-sajib/attentionCNN/blob/main/notebooks/AttentionCNN_Tutorial.ipynb)
+
 ### Important Notes:
 
 - The folder name must be `dataset`.
