@@ -1,10 +1,10 @@
-### attentionCNN
+# attentionCNN
 
 This project utilizes a customized Transformer architecture where the standard Multi-Layer Perceptron (MLP) within the Transformer encoder layer has been replaced with a Convolutional Layer (Conv2D). This modification aims to leverage the spatial hierarchies that Conv2D layers capture, providing a richer representation of the input data. 
 
 After processing the data through the Transformer encoder with Conv2D layers, an Autoencoder is employed. The Autoencoder is responsible for further compressing the output, learning efficient representations, and reconstructing the input. This combination of a Transformer with Conv2D and Autoencoder provides a powerful approach for tasks that require both sequential modeling and spatial feature extraction.
 
-<img src="https://github.com/atikul-islam-sajib/ViT-Scratch/blob/main/artifacts/outputs/test_image/test_image.png" alt="ViT Result">
+<img src="https://www.researchgate.net/publication/334288604/figure/fig1/AS:778232232148992@1562556431066/The-Transformer-encoder-structure.ppm" alt="ViT Result">
 
 
 <img src="https://miro.medium.com/v2/resize:fit:600/1*nqzWupxC60iAH2dYrFT78Q.png" alt="ViT Architecture">
