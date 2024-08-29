@@ -137,7 +137,7 @@ MLFlow:
   MLFLOW_EXPERIMENT_NAME: "attentionCNN - last training"                            # Experiment name in MLflow
   MLFLOW_USERNAME: "atikul-islam-sajib"                                             # Username for MLflow access
   MLFLOW_REPONAME: "attentionCNN"                                                   # Repository name for MLflow
-  MLFLOW_PASSWORD: "74d9f47e6bc7f8a7a170d258186fcdf18a099a991"                      # Password/token for MLflow authentication
+  MLFLOW_PASSWORD: "*****************************************"                      # Password/token for MLflow authentication
 
 Trainer:
   epochs: 500                                             # Number of epochs to train the model
