@@ -104,10 +104,7 @@ dataset/  # Folder name must be 'dataset'
 - Ensure that all image files are correctly named and placed in their respective folders to maintain the integrity and organization of the dataset.
 
 **Configure the Project**:
-```yaml  
-Here's the YAML configuration with one-line comments added beside each parameter:
-
-```yaml
+```yaml 
 path:
   RAW_PATH: "./data/raw/" # Path to raw data
   PROCESSED_PATH: "./data/processed/" # Path to processed data
