@@ -4,7 +4,6 @@ This project utilizes a customized Transformer architecture where the standard M
 
 After processing the data through the Transformer encoder with Conv2D layers, an Autoencoder is employed. The Autoencoder is responsible for further compressing the output, learning efficient representations, and reconstructing the input. This combination of a Transformer with Conv2D and Autoencoder provides a powerful approach for tasks that require both sequential modeling and spatial feature extraction.
 
-### Result: 
 <img src="https://github.com/atikul-islam-sajib/attentionCNN/blob/main/artifacts/outputs/test_image/valid_result.png" alt="ViT Architecture">
 
 
@@ -40,41 +39,49 @@ The repository provides scripts and notebooks to help you understand and experim
 ├── artifacts
 │   ├── checkpoints
 │   │   ├── best_model
-│   │   │   └── __init__.py
+│   │   │   └── best_model.pth
 │   │   └── train_models
-│   │       └── __init__.py
 │   ├── files
-│   │   ├── __init__.py
-├── config.yml
-├── data
-│   ├── processed
-│   │   ├── __init__.py
-│   │   └── dataloader.pkl
-│   └── raw
-│       └── __init__.py
+│   ├── metrics
+│   └── outputs
+│       ├── test_image
+│       └── train_images
+│       └── dataset.zip
+├── dvc.lock
+├── dvc.yaml
+├── logs
+│   └── _.py
+├── mlruns
+│   ├── 0
 ├── mypy.ini
 ├── notebooks
-│   ├── ModelProtype.ipynb
-│   └── Model_Inference.ipynb
+│   ├── Inference.ipynb
+│   └── ModelPrototype.ipynb
 ├── requirements.txt
 ├── setup.py
 ├── src
-│   ├── ViT.py
+│   ├── __init__.py
+│   ├── attentionCNN.py
+│   ├── attentionCNNBlock.py
 │   ├── cli.py
 │   ├── dataloader.py
+│   ├── decoder_block.py
 │   ├── encoder_block.py
 │   ├── feedforward_network.py
 │   ├── helper.py
-│   ├── inference.py
-│   ├── layer_normalization.py
-│   ├── loss.py
+│   ├── loss
+│   │   ├── __init__.py
+│   │   ├── bce_loss.py
+│   │   ├── combo_loss.py
+│   │   ├── dice_loss.py
+│   │   ├── focal_loss.py
+│   │   ├── jaccard_loss.py
+│   │   ├── mse_loss.py
+│   │   └── tversky_loss.py
 │   ├── multihead_attention.py
-│   ├── patch_embedding.py
-│   ├── positional_encoding.py
 │   ├── scaled_dot_product.py
 │   ├── tester.py
 │   ├── trainer.py
-│   ├── transformer.py
 │   └── utils.py
 └── unittest
     └── test.py
@@ -105,63 +112,63 @@ dataset/  # Folder name must be 'dataset'
 **Configure the Project**:
 ```yaml 
 path:
-  RAW_PATH: "./data/raw/" # Path to raw data
-  PROCESSED_PATH: "./data/processed/" # Path to processed data
-  FILES_PATH: "./artifacts/files/" # Path to store files and artifacts
-  TRAIN_IMAGES: "./artifacts/outputs/train_images/" # Path to save training images
-  TEST_IMAGE: "./artifacts/outputs/test_image/" # Path to save a test image
-  TRAIN_MODELS: "./artifacts/checkpoints/train_models/" # Path to save trained models
-  BEST_MODEL: "./artifacts/checkpoints/best_model/" # Path to save the best model checkpoint
-  METRICS_PATH: "./artifacts/metrics/" # Path to save metrics and evaluation results
+  RAW_PATH: "./data/raw/"                                  # Path to raw data
+  PROCESSED_PATH: "./data/processed/"                      # Path to processed data
+  FILES_PATH: "./artifacts/files/"                         # Path to store files and artifacts
+  TRAIN_IMAGES: "./artifacts/outputs/train_images/"        # Path to save training images
+  TEST_IMAGE: "./artifacts/outputs/test_image/"            # Path to save a test image
+  TRAIN_MODELS: "./artifacts/checkpoints/train_models/"    # Path to save trained models
+  BEST_MODEL: "./artifacts/checkpoints/best_model/"        # Path to save the best model checkpoint
+  METRICS_PATH: "./artifacts/metrics/"                     # Path to save metrics and evaluation results
 
 dataloader:
-  image_path: "./data/raw/dataset.zip" # Path to the image dataset (zip file)
-  image_size: 128 # Size to which images will be resized
-  batch_size: 16 # Batch size for loading data
-  split_size: 0.20 # Proportion of data used for validation/testing
+  image_path: "./data/raw/dataset.zip"                     # Path to the image dataset (zip file)
+  image_size: 128                                          # Size to which images will be resized
+  batch_size: 16                                           # Batch size for loading data
+  split_size: 0.20                                         # Proportion of data used for validation/testing
 
 attentionCNN:
-  image_channels: 3 # Number of channels in the input images (e.g., 3 for RGB)
-  image_size: 128 # Size of the input images
-  nheads: 8 # Number of attention heads in the Transformer layer
-  dropout: 0.3 # Dropout rate for regularization
-  num_layers: 2 # Number of layers in the Transformer encoder
-  activation: "relu" # Activation function used in the network
-  bias: True # Whether to use bias in the network layers
+  image_channels: 3                                        # Number of channels in the input images (e.g., 3 for RGB)
+  image_size: 128                                          # Size of the input images
+  nheads: 8                                                # Number of attention heads in the Transformer layer
+  dropout: 0.3                                             # Dropout rate for regularization
+  num_layers: 2                                            # Number of layers in the Transformer encoder
+  activation: "relu"                                       # Activation function used in the network
+  bias: True                                               # Whether to use bias in the network layers
 
 MLFlow:
-  MLFLOW_TRACKING_URI: "https://github.com/atikul-islam-sajib/attentionCNN.git" # URI for MLflow tracking
-  MLFLOW_EXPERIMENT_NAME: "attentionCNN - last training" # Experiment name in MLflow
-  MLFLOW_USERNAME: "atikul-islam-sajib" # Username for MLflow access
-  MLFLOW_REPONAME: "attentionCNN" # Repository name for MLflow
-  MLFLOW_PASSWORD: "74d9f47e6bc7f8a7a170d258186fcdf18a099a991" # Password/token for MLflow authentication
+  MLFLOW_TRACKING_URI: "https://github.com/atikul-islam-sajib/attentionCNN.git"     # URI for MLflow tracking
+  MLFLOW_EXPERIMENT_NAME: "attentionCNN - last training"                            # Experiment name in MLflow
+  MLFLOW_USERNAME: "atikul-islam-sajib"                                             # Username for MLflow access
+  MLFLOW_REPONAME: "attentionCNN"                                                   # Repository name for MLflow
+  MLFLOW_PASSWORD: "74d9f47e6bc7f8a7a170d258186fcdf18a099a991"                      # Password/token for MLflow authentication
 
 Trainer:
-  epochs: 500 # Number of epochs to train the model
-  lr: 0.0001 # Learning rate for training
-  beta1: 0.75 # Beta1 parameter for the Adam optimizer
-  beta2: 0.999 # Beta2 parameter for the Adam optimizer
-  momentum: 0.95 # Momentum factor for SGD optimizer
-  smooth: 1e-4 # Smoothing factor for the loss function
-  alpha: 0.25 # Alpha value (e.g., for focal loss or regularization)
-  gamma: 2 # Gamma value (e.g., for learning rate scheduler)
-  step_size: 20 # Step size for learning rate scheduler
-  weight_decay: 0.001 # Weight decay (L2 penalty) for regularization
-  device: "mps" # Device to use for training (e.g., cpu, cuda, mps)
-  loss: "mse" # Loss function to use (e.g., MSE)
-  adam: True # Use Adam optimizer if True
-  SGD: False # Use SGD optimizer if True
-  lr_scheduler: False # Use learning rate scheduler if True
-  weight_init: True # Initialize model weights if True
-  l1_regularization: False # Apply L1 regularization if True
-  l2_regularization: False # Apply L2 regularization if True
-  elasticnet_regularization: False # Apply Elastic Net regularization if True
-  mlflow: True # Track experiments with MLflow if True
-  verbose: True # Enable verbose output if True
+  epochs: 500                                             # Number of epochs to train the model
+  lr: 0.0001                                              # Learning rate for training
+  beta1: 0.75                                             # Beta1 parameter for the Adam optimizer
+  beta2: 0.999                                            # Beta2 parameter for the Adam optimizer
+  momentum: 0.95                                          # Momentum factor for SGD optimizer
+  smooth: 1e-4                                            # Smoothing factor for the loss function
+  alpha: 0.25                                             # Alpha value (e.g., for focal loss or regularization)
+  gamma: 2                                                # Gamma value (e.g., for learning rate scheduler)
+  step_size: 20                                           # Step size for learning rate scheduler
+  weight_decay: 0.001                                     # Weight decay (L2 penalty) for regularization
+  device: "mps"                                           # Device to use for training (e.g., cpu, cuda, mps)
+  loss: "mse"                                             # Loss function to use (e.g., MSE)
+  adam: True                                              # Use Adam optimizer if True
+  SGD: False                                              # Use SGD optimizer if True
+  lr_scheduler: False                                     # Use learning rate scheduler if True
+  weight_init: True                                       # Initialize model weights if True
+  l1_regularization: False                                # Apply L1 regularization if True
+  l2_regularization: False                                # Apply L2 regularization if True
+  elasticnet_regularization: False                        # Apply Elastic Net regularization if True
+  mlflow: True                                            # Track experiments with MLflow if True
+  verbose: True                                           # Enable verbose output if True
 
 Tester:
-  data: "test" # Specify which dataset to use for testing (test or valid)
-  device: "mps" # Device to use for testing (e.g., cpu, cuda, mps)
+  data: "test"                                            # Specify which dataset to use for testing (test or valid)
+  device: "mps"                                           # Device to use for testing (e.g., cpu, cuda, mps)
 ```
 
 This version includes comments explaining the purpose of each configuration option, making it easier to understand and modify as needed.
@@ -244,7 +251,7 @@ These commands should be added to your README for users to understand how to exe
 
 You can access the MLflow experiment tracking UI hosted on DagsHub using the following link:
 
-[ViT Experiment Tracking on DagsHub](https://dagshub.com/atikul-islam-sajib/attentionCNN/experiments)
+[attentionCNN Experiment Tracking on DagsHub](https://dagshub.com/atikul-islam-sajib/attentionCNN/experiments)
 
 ### Using MLflow UI Locally
 
