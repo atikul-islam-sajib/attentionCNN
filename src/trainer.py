@@ -379,7 +379,7 @@ class Trainer:
                             "elasticnet_regularization": str(
                                 self.elasticnet_regularization
                             ),
-                            "is_weight_int": str(self.is_weight_int),
+                            "is_weight_init": str(self.is_weight_init),
                             "is_mlflow": str(self.is_mlflow),
                             "verbose": str(self.verbose),
                         }
