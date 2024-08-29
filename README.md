@@ -6,9 +6,6 @@ After processing the data through the Transformer encoder with Conv2D layers, an
 
 <img src="https://github.com/atikul-islam-sajib/Research-Assistant-Work-/blob/main/IMG_0772.jpg" alt="attentionCNN Result">
 
-
-<img src="https://github.com/atikul-islam-sajib/attentionCNN/blob/main/artifacts/files/valid_result.png" alt="attentionCNN Result">
-
 ## Installation
 
 To get started, clone the repository and install the required dependencies. It is recommended to use a virtual environment to manage dependencies.
