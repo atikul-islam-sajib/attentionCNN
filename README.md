@@ -223,8 +223,8 @@ This table provides a clear overview of the command-line arguments that can be p
 
 | **Action**       | **Command Line**                                                                                                                                                                                 |
 |------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Train the Model** | ```bash <br> python cli.py --train --image_path /path/to/dataset --image_size 224 --batch_size 32 --epochs 50 --lr 0.001 --momentum 0.9 --adam True --loss cross_entropy --device cuda --verbose True --mlflow True --weight_init True ``` |
-| **Test the Model**  | ```bash <br> python cli.py --test --data test --device cuda --verbose True ```                                                                                                                 |
+| **Train the Model** | python cli.py --train --image_path /path/to/dataset --image_size 224 --batch_size 32 --epochs 50 --lr 0.001 --momentum 0.9 --adam True --loss cross_entropy --device cuda --verbose True --mlflow True --weight_init True |
+| **Test the Model**  | python cli.py --test --data test --device cuda --verbose True                                                                                                                |
 
 You can include this table in your README file, making it easy for users to understand the commands needed to train and test the model.
 
