@@ -26,10 +26,6 @@ source env/bin/activate  # On Windows, use `env\Scripts\activate`
 pip install -r requirements.txt
 ```
 
-## Usage
-
-The repository provides scripts and notebooks to help you understand and experiment with the attentionCNN. Below is an example script that demonstrates how to initialize the attentionCNN, create random input tensors, and print the shapes of the embedding and output tensors.
-
 ## Project Structure
 ```
 .
@@ -224,17 +220,13 @@ Tester:
 
 This table provides a clear overview of the command-line arguments that can be passed to the script, along with their descriptions, types, and default values.
 
-#### Here are the command lines to train and test the model using the provided CLI:
 
-### Command to Train the Model
-```bash
-python cli.py --train --image_path /path/to/dataset --image_size 224 --batch_size 32 --epochs 50 --lr 0.001 --momentum 0.9 --adam True --loss cross_entropy --device cuda --verbose True --mlflow True --weight_init True
-```
+| **Action**       | **Command Line**                                                                                                                                                                                 |
+|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Train the Model** | ```bash <br> python cli.py --train --image_path /path/to/dataset --image_size 224 --batch_size 32 --epochs 50 --lr 0.001 --momentum 0.9 --adam True --loss cross_entropy --device cuda --verbose True --mlflow True --weight_init True ``` |
+| **Test the Model**  | ```bash <br> python cli.py --test --data test --device cuda --verbose True ```                                                                                                                 |
 
-### Command to Test the Model
-```bash
-python cli.py --test --data test --device cuda --verbose True
-```
+You can include this table in your README file, making it easy for users to understand the commands needed to train and test the model.
 
 **Explanation:**
 - Adjust the paths, hyperparameters, and other options (like `image_size`, `batch_size`, `epochs`, etc.) according to your specific use case.
