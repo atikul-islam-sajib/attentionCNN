@@ -4,7 +4,7 @@ This project utilizes a customized Transformer architecture where the standard M
 
 After processing the data through the Transformer encoder with Conv2D layers, an Autoencoder is employed. The Autoencoder is responsible for further compressing the output, learning efficient representations, and reconstructing the input. This combination of a Transformer with Conv2D and Autoencoder provides a powerful approach for tasks that require both sequential modeling and spatial feature extraction.
 
-<img src="https://github.com/atikul-islam-sajib/attentionCNN/blob/main/artifacts/outputs/test_image/valid_result.png" alt="ViT Architecture">
+<img src="https://github.com/atikul-islam-sajib/Research-Assistant-Work-/blob/main/IMG_0772.jpg" alt="attentionCNN Result">
 
 
 ## Installation
@@ -224,7 +224,7 @@ Tester:
 
 This table provides a clear overview of the command-line arguments that can be passed to the script, along with their descriptions, types, and default values.
 
-Here are the command lines to train and test the model using the provided CLI:
+#### Here are the command lines to train and test the model using the provided CLI:
 
 ### Command to Train the Model
 ```bash
@@ -241,9 +241,6 @@ python cli.py --test --data test --device cuda --verbose True
 - For training, ensure that `--train` is included in the command line, along with all the necessary hyperparameters.
 - For testing, ensure that `--test` is included, and specify the dataset (`test` or `valid`) using `--data`.
 
-These commands should be added to your README for users to understand how to execute training and testing processes with your model.
-
-
 ### Accessing Experiment Tracking
 
 You can access the MLflow experiment tracking UI hosted on DagsHub using the following link:
@@ -257,3 +254,12 @@ If you prefer to run the MLflow UI locally, use the following command:
 ```bash
 mlflow ui
 ```
+
+## Contributing
+
+Contributions are welcome! If you have any ideas, suggestions, or bug reports, please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
