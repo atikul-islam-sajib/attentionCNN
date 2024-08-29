@@ -1,4 +1,4 @@
-# attentionCNN
+# attentionCNN - Combination of Transformer Encoder Layer & Auto Encoder
 
 This project utilizes a customized Transformer architecture where the standard Multi-Layer Perceptron (MLP) within the Transformer encoder layer has been replaced with a Convolutional Layer (Conv2D). This modification aims to leverage the spatial hierarchies that Conv2D layers capture, providing a richer representation of the input data. 
 
