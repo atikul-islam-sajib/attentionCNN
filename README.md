@@ -223,8 +223,8 @@ This table provides a clear overview of the command-line arguments that can be p
 
 | **Action**       | **Command Line**                                                                                                                                                                                 |
 |------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| *Train the Model* | *python cli.py --train --image_path /path/to/dataset --image_size 224 --batch_size 32 --epochs 50 --lr 0.001 --momentum 0.9 --adam True --loss cross_entropy --device cuda --verbose True --mlflow True --weight_init True* |
-| *Test the Model*  | *python cli.py --test --data test --device cuda --verbose True*                                                                                                                |
+| **Train the Model** | *python cli.py --train --image_path /path/to/dataset --image_size 224 --batch_size 32 --epochs 50 --lr 0.001 --momentum 0.9 --adam True --loss cross_entropy --device cuda --verbose True --mlflow True --weight_init True* |
+| **Test the Model**  | *python cli.py --test --data test --device cuda --verbose True*                                                                                                                |
 
 **Explanation:**
 - Adjust the paths, hyperparameters, and other options (like `image_size`, `batch_size`, `epochs`, etc.) according to your specific use case.
