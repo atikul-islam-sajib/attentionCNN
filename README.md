@@ -6,8 +6,8 @@ After processing the data through the Transformer encoder with Conv2D layers, an
 
 <table>
   <tr>
-    <td><img src="https://pytorch.org/assets/images/2022-7-12-a-better-transformer-for-fast-transformer-encoder-inference-1.png" alt="UNet" style="width: 200%; max-width: 600px;"/></td>
-    <td><img src="https://miro.medium.com/v2/resize:fit:600/1*nqzWupxC60iAH2dYrFT78Q.png" alt="AttentionUNet" style="width: 200%; max-width: 600px;"/></td>
+    <td><img src="https://pytorch.org/assets/images/2022-7-12-a-better-transformer-for-fast-transformer-encoder-inference-1.png" alt="Transformer Encoder" style="width: 200%; max-width: 600px;"/></td>
+    <td><img src="https://www.assemblyai.com/blog/content/images/2022/01/autoencoder_architecture.png" alt="Auto Encoder" style="width: 200%; max-width: 600px;"/></td>
   </tr>
   <tr>
     <td align="center">UNet</td>
