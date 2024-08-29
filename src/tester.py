@@ -181,27 +181,13 @@ class Tester:
                 plt.title("Mask Image")
 
             plt.tight_layout()
-            plt.savefig(
-                os.path.join(
-                    config()["path"]["TEST_IMAGE"],
-                    (
-                        "{}_result.png".format(self.data)
-                        if self.data == "test"
-                        else "{}_result.png".format(self.data)
-                    ),
-                )
+            result_image_path = os.path.join(
+                config()["path"]["TEST_IMAGE"], "{}_result.png".format(self.data)
             )
+            plt.savefig(result_image_path)
             plt.show()
 
-            print(
-                "IoU score # {:.4f} and result image saved the result image to {}".format(
-                    os.path.join(
-                        IoU,
-                        config()["path"]["TEST_IMAGE"],
-                        "{}_result.png".format(self.data),
-                    )
-                )
-            )
+            print(f"IoU score: {IoU:.4f}. Result image saved to {result_image_path}.")
 
 
 if __name__ == "__main__":
