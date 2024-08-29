@@ -4,7 +4,16 @@ This project utilizes a customized Transformer architecture where the standard M
 
 After processing the data through the Transformer encoder with Conv2D layers, an Autoencoder is employed. The Autoencoder is responsible for further compressing the output, learning efficient representations, and reconstructing the input. This combination of a Transformer with Conv2D and Autoencoder provides a powerful approach for tasks that require both sequential modeling and spatial feature extraction.
 
-<img src="https://machinelearningmastery.com/wp-content/uploads/2021/10/transformer_1.png" alt="ViT Result">
+<table>
+  <tr>
+    <td><img src="https://pytorch.org/assets/images/2022-7-12-a-better-transformer-for-fast-transformer-encoder-inference-1.png" alt="UNet" style="width: 200%; max-width: 600px;"/></td>
+    <td><img src="https://miro.medium.com/v2/resize:fit:600/1*nqzWupxC60iAH2dYrFT78Q.png" alt="AttentionUNet" style="width: 200%; max-width: 600px;"/></td>
+  </tr>
+  <tr>
+    <td align="center">UNet</td>
+    <td align="center">AttentionUNet</td>
+  </tr>
+</table>
 
 
 <img src="https://miro.medium.com/v2/resize:fit:600/1*nqzWupxC60iAH2dYrFT78Q.png" alt="ViT Architecture">
